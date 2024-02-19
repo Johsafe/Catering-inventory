@@ -23,13 +23,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    cost: {
-      type: DataTypes.DECIMAL(10, 2),
-      allowNull: false,
-      validate: {
-        min: 0,
-      },
-    },
+    // cost: {
+    //   type: DataTypes.DECIMAL(10, 2),
+    //   allowNull: false,
+    //   validate: {
+    //     min: 0,
+    //   },
+    // },
   });
 
   Ingredients.associate = function (models) {

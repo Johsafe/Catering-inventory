@@ -12,11 +12,13 @@ const authRouter = require("./routes/AuthRoute");
 const roleRouter = require("./routes/roleRoute");
 const vendorRouter = require("./routes/supplierRoute");
 const productRouter = require("./routes/productRoute");
+const recipeRouter = require("./routes/recipeRoute");
 
 app.use("/user", authRouter);
 app.use("/role", roleRouter);
 app.use("/vendor", vendorRouter);
 app.use("/product",productRouter);
+app.use("/recipe",recipeRouter);
 
 db.sequelize.sync().then(() => {
   app.listen(8000, () => {

@@ -20,29 +20,6 @@ const formatKenyanPhoneNumber = (phoneNumber, res) => {
   }
 };
 
-//create vendor
-// vendorRouter.post("/create",async(req,res)=>{
-//   try {
-//     const { name, company, email, phone, address } = req.body;
-    
-//     const emailExist = await Supplier.findOne({ where:{email:req.body.email,}})
-//     if(emailExist){
-//       return res.status(409).send({message:'user exists'})
-
-//     }
-//     const vendor = await Supplier.create({
-//       name, company, email, phone, address
-//     })
-
-//     vendor.save();
-//     res.status(201).json({
-//       message: "Signup successful!",
-//       vendor: vendor,
-//     });
-//   } catch (error) {
-    
-//   }
-// })
 //create a new vendor
 vendorRouter.post("/create", async (req, res) => {
   try {
