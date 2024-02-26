@@ -1,0 +1,48 @@
+/* MarkOrderScreen */
+
+.cardheader {
+  display: flex;
+  background: rgb(164, 231, 164);
+  color: white;
+  justify-content: space-between;
+  padding: 0.5rem;
+  height: 6rem;
+  font-weight: 550;
+}
+.date {
+  font-weight: 900;
+  font-size: 1.2rem;
+  margin-bottom: 0;
+}
+.subheader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 0.1rem solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+.orderheaderdetails {
+  padding: 0.7rem;
+  display: flex;
+  justify-content: space-around;
+  font-size: 1rem;
+  margin: 0;
+  gap: 1rem;
+}
+.orderheaderdetails h5 {
+  font-weight: 700;
+  font-size: 1rem;
+}
+.orderheaderdetails p {
+  margin-bottom: 3px;
+}
+
+.orderbody {
+  display: flex;
+  gap: 3rem;
+  padding: 1rem;
+  margin-left: 2rem;
+}
