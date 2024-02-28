@@ -66,7 +66,7 @@ export default function AddRecipe() {
     };
 
     try {
-      const response = await fetch("/api/submit-form", {
+      const response = await fetch(`${base_url}recipe/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -74,6 +74,7 @@ export default function AddRecipe() {
         body: JSON.stringify(formData),
       });
       console.log("Form submitted successfully", response);
+      navigate("/recipe");
     } catch (error) {
       console.error("Error submitting form", error);
     }
@@ -237,10 +238,10 @@ export default function AddRecipe() {
               </Card>
             </Stack>
           </form>
-          <p>
+          {/* <p>
             Your favorite vegetables:{" "}
             {products.map((veg) => `${veg.label} (${veg.quantity})`).join(", ")}{" "}
-          </p>
+          </p> */}
         </Box>
       </Container>
     </div>

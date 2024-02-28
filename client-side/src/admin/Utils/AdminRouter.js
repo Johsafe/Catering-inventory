@@ -24,6 +24,7 @@ import RecipeScreen from "../Screens/RecipeScreen";
 import AddSupplier from "../Screens/AddSupplier";
 import EditSupplier from "../Screens/EditSupplier";
 import AddRecipe from "../Screens/AddRecipe";
+import ViewRecipe from "../Screens/ViewRecipe";
 
 function AdminRouter() {
   let token = localStorage.getItem("token") ? true : false;
@@ -77,10 +78,10 @@ function AdminRouter() {
             path="/addrecipe"
             element={token ? <AddRecipe/> : <Navigate to="/login" />}
           />
-          {/* <Route
+          <Route
             path="/:id/viewrecipe"
             element={token ? <ViewRecipe/> : <Navigate to="/login" />}
-          /> */}
+          />
           <Route
             path="/add"
             element={token ? <AddProduct /> : <Navigate to="/login" />}

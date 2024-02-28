@@ -82,7 +82,7 @@ export default function RecipeScreen() {
       await fetch(`${base_url}recipe/recipe/${id}`, {
         method: "DELETE",
       });
-      setRecipe(recipe.filter((recipe) => recipe._id !== id));
+      setRecipe(recipe.filter((recipe) => recipe.id !== id));
       toast.success("Recipe deleted successfully");
     } catch (err) {
       toast.error(getError(err));
@@ -252,7 +252,7 @@ export default function RecipeScreen() {
               <thead>
                 <tr>
                   <th style={{ width: 120, padding: "12px 6px" }}>N/A</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Id</th>
+                  {/* <th style={{ width: 140, padding: "12px 6px" }}>Id</th> */}
                   <th style={{ width: 240, padding: "12px 6px" }}>Title</th>
                   {/* <th style={{ width: 240, padding: "12px 6px" }}>Customer</th> */}
                   <th style={{ width: 140, padding: "12px 6px" }}> </th>
@@ -264,11 +264,11 @@ export default function RecipeScreen() {
                     <td>
                       <Typography level="body-xs">#</Typography>
                     </td>
-                    <td>
+                    {/* <td>
                       <Typography level="body-xs">
                         {recipe.recipe_id}
                       </Typography>
-                    </td>
+                    </td> */}
                     <td>
                       {" "}
                       <Typography level="body-xs">{recipe.title}</Typography>
@@ -286,7 +286,7 @@ export default function RecipeScreen() {
                           </Link>
                           </Button>
                           <Button style={{ background: "none" }}>
-                            <Link to={`/${recipe._id}/viewrecipe`}>
+                            <Link to={`/${recipe.id}/viewrecipe`}>
                               <VisibilityIcon />
                             </Link>
                           </Button>

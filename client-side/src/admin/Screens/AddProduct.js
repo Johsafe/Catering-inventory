@@ -356,18 +356,6 @@ export default function AddProduct() {
                   </Stack>
                 </Stack>
               </Stack>
-              {/* <CardOverflow
-                sx={{ borderTop: "1px solid", borderColor: "divider" }}
-              >
-                <CardActions sx={{ alignSelf: "flex-end", pt: 2 }}>
-                  <Button size="sm" variant="outlined" color="neutral">
-                    <Link to="/product">Cancel</Link>
-                  </Button>
-                  <Button size="sm" variant="solid" onClick={addProduct}>
-                    Add
-                  </Button>
-                </CardActions>
-              </CardOverflow> */}
             </Card>
           </Stack>
         </Box>
