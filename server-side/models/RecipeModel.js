@@ -1,10 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
   const Recipe = sequelize.define("Recipe", {
-    recipe_id: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
+    // recipe_id: {
+    //   type: DataTypes.STRING,
+    //   allowNull: false,
+    //   unique: true,
+    // },
     title: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   });
   Recipe.associate = function (models) {
-    Recipe.hasMany(models.Ingredients);
+    Recipe.hasMany(models.Ingredients, { foreignKey: 'recipe_id' });
   };
 
   return Recipe;

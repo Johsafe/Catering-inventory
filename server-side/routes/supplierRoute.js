@@ -26,8 +26,8 @@ vendorRouter.post("/create", async (req, res) => {
     const { name, company, email, phone, address } = req.body;
 
     if (!name || !company || !email || !phone || !address) {
-        return res.status(400).json({ message: "All fields are required." });
-      }
+      return res.status(400).json({ message: "All fields are required." });
+    }
     //confirm isvendor  exists in the system
     const vendorExists = await Supplier.findOne({
       where: {
@@ -79,7 +79,15 @@ vendorRouter.get("/vendors", async (req, res) => {
     });
   }
 });
-
+//get a vendor by id
+vendorRouter.get("/vendor/:id", async (req, res) => {
+  const vendor = await Supplier.findByPk(req.params.id);
+  if (vendor) {
+    res.send(vendor);
+  } else {
+    res.status(404).send({ message: "vendor not found" });
+  }
+});
 //Update vendor info
 vendorRouter.put("/vendor/:id", async (req, res) => {
   try {

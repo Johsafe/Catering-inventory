@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Ingredients.associate = function (models) {
-    Ingredients.belongsTo(models.Recipe);
+    Ingredients.belongsTo(models.Recipe, { foreignKey: 'recipe_id' });
     Ingredients.belongsTo(models.Products);
   };
 

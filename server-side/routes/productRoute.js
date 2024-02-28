@@ -78,7 +78,7 @@ productRouter.get("/products", async (req, res) => {
       include: [
         {
           model: Supplier,
-          attributes: ["id", "name"], // Specify which supplier attributes to include
+          attributes: ["id", "name"],
         },
       ],
     });
