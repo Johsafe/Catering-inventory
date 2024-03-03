@@ -1,20 +1,19 @@
 import * as React from "react";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
+import Divider from "@mui/joy/Divider";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
 import Input from "@mui/joy/Input";
-import Table from "@mui/joy/Table";
-import Sheet from "@mui/joy/Sheet";
-import Breadcrumbs from "@mui/joy/Breadcrumbs";
-import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
-import Typography from "@mui/joy/Typography";
-import Divider from "@mui/joy/Divider";
-import Select from "react-select";
-// import Option from "@mui/joy/Option";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
 import ModalClose from "@mui/joy/ModalClose";
+import Select from "react-select";
+import Table from "@mui/joy/Table";
+import Sheet from "@mui/joy/Sheet";
+import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
+import Typography from "@mui/joy/Typography";
+import Breadcrumbs from "@mui/joy/Breadcrumbs";
 
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SearchIcon from "@mui/icons-material/Search";
@@ -23,55 +22,89 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import Avatar from "react-avatar";
-import EditStockModal from "./EditProductStock";
 import { Link } from "react-router-dom";
+// import DeleteProductModel from "./DeleteProductModel";
 import { Container } from "@mui/material";
 import { base_url, getError } from "../Utils/Utils";
 import { toast } from "react-toastify";
 import SideBar from "../Layout/sideBar";
 
-export default function OutOfStock() {
+export default function ProductScreen() {
   const [open, setOpen] = React.useState(false);
+
   const [products, setProducts] = React.useState([]);
   const [filteredProducts, setFilteredProducts] = React.useState([]);
   const [section, setSection] = React.useState([]);
   const [category, setCategory] = React.useState([]);
+  //get all products
+  const fetchProducts = async () => {
+    try {
+      const fetched = await fetch(`${base_url}product/products`);
+      const jsonData = await fetched.json();
+      const uniqueBatch = [
+        ...new Set(jsonData.map((product) => product.batch)),
+      ];
+      const uniqueCate = [
+        ...new Set(jsonData.map((product) => product.category)),
+      ];
+      setSection(uniqueBatch);
+      setCategory(uniqueCate);
+      setProducts(jsonData);
+      setFilteredProducts(jsonData);
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  };
 
   React.useEffect(() => {
-    //get out-of-stock products
-    const fetchProducts = async () => {
-      try {
-        const fetched = await fetch(`${base_url}stats/out-of-stock`);
-        const jsonData = await fetched.json();
-        const uniqueBrands = [
-          ...new Set(jsonData.map((product) => product.brand)),
-        ];
-        const uniqueCate = [
-          ...new Set(jsonData.map((product) => product.category)),
-        ];
-        setSection(uniqueBrands);
-        setCategory(uniqueCate);
-        setProducts(jsonData);
-        setFilteredProducts(jsonData);
-      } catch (err) {
-        toast.error(getError(err));
-      }
-    };
-
     fetchProducts();
   }, []);
 
+  //search by title
+  const [search, setSearch] = React.useState("");
+  const [searchResult, setSearchResult] = React.useState([]);
+  const searchHandler = (searchValue) => {
+    setSearch(searchValue);
+
+    if (search !== "") {
+      const newList = products.filter((product) => {
+        // return (product.title)
+        // return Object.values(product.title)
+        //   .join('')
+        //   .toLowerCase()
+        //   .includes(search.toLowerCase());
+        return product.title.join('').toLowerCase().includes(search.toLowerCase());
+      });
+      setSearchResult(newList);
+    } else {
+      setSearchResult(products);
+    }
+  };
+
   // filter by brand
-  function filterBrand(value) {
+  // function filterBatch(value){
+  //   let productArray=[]
+  //   filteredProducts.filter((product)=>{
+  //     if(product.brand===value){
+  //       productArray.push(product)
+  //       setProducts(productArray)
+  //     }else if(value==="All"){
+  //       setProducts(filteredProducts)
+  //     }
+  //   })
+  // }
+
+  // filter by brand
+  function filterBatch(value) {
     if (value === "All") {
       setProducts(filteredProducts);
       return;
     }
 
-    const brandFilteredProducts = filteredProducts.filter(
-      (product) => product.brand === value
+    const batchFilteredProducts = filteredProducts.filter(
+      (product) => product.batch === value
     );
-    setProducts(brandFilteredProducts);
+    setProducts(batchFilteredProducts);
   }
 
   // filter by category
@@ -86,25 +119,38 @@ export default function OutOfStock() {
     );
     setProducts(cateFilteredProducts);
   }
-  const brandOptions = section.map((brand) => ({ value: brand, label: brand }));
+
+  // // filter by category
+  // function filterCate(value){
+  //   let cateArray=[]
+  //   filteredProducts.filter((product)=>{
+  //     if(product.category===value){
+  //       cateArray.push(product)
+  //       setProducts(cateArray)
+  //     }else if(value==="All"){
+  //       setProducts(filteredProducts)
+  //     }
+  //   })
+  // }
+  // const uniqueBatch = [...new Set(products.map((product) => product.brand))];
+  const batchOptions = section.map((batch) => ({ value: batch, label: batch }));
   const categoryOptions = category.map((cate) => ({
     value: cate,
     label: cate,
   }));
-
   // filter
   const renderFilters = () => (
     <React.Fragment>
-      <FormControl size="sm">
-        <FormLabel>Brand</FormLabel>
+      <FormControl size="sm" style={{ zIndex: 100 }}>
+        <FormLabel>Batch</FormLabel>
         <Select
           size="sm"
           placeholder="Filter by brand"
-          onChange={(e) => filterBrand(e.value)}
-          options={[{ value: "All", label: "All" }, ...brandOptions]}
+          onChange={(e) => filterBatch(e.value)}
+          options={[{ value: "All", label: "All" }, ...batchOptions]}
         />
       </FormControl>
-      <FormControl size="sm">
+      <FormControl size="sm" style={{ zIndex: 100 }}>
         <FormLabel>Category</FormLabel>
         <Select
           size="sm"
@@ -115,7 +161,6 @@ export default function OutOfStock() {
       </FormControl>
     </React.Fragment>
   );
-
   return (
     <div style={{ display: "flex" }}>
       <SideBar />
@@ -132,6 +177,7 @@ export default function OutOfStock() {
             <Input
               size="sm"
               placeholder="Search"
+              variant="outlined"
               startDecorator={<SearchIcon />}
               sx={{ flexGrow: 1 }}
             />
@@ -203,17 +249,8 @@ export default function OutOfStock() {
             }}
           >
             <Typography level="h2" component="h1">
-              Products Out Of Stock
+              Products
             </Typography>
-            <Link to="/product">
-              <Button
-                color="primary"
-                // startDecorator={<AddIcon />}
-                size="sm"
-              >
-                Back to products
-              </Button>
-            </Link>
           </Box>
 
           {/* search for products */}
@@ -233,9 +270,10 @@ export default function OutOfStock() {
             <FormControl sx={{ flex: 1 }} size="sm">
               <FormLabel>Search for product</FormLabel>
               <Input
-                size="sm"
+                // size="sm"
                 placeholder="Search"
                 startDecorator={<SearchIcon />}
+                onChange={(e) => searchHandler(e.target.value)}
               />
             </FormControl>
             {renderFilters()}
@@ -269,51 +307,95 @@ export default function OutOfStock() {
               <thead>
                 <tr>
                   <th style={{ width: 140, padding: "12px 6px" }}>Title</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Brand</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Batch</th>
                   <th style={{ width: 140, padding: "12px 6px" }}>InStock</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Price</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Cost</th>
                   <th style={{ width: 240, padding: "12px 6px" }}>Product</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}> </th>
                 </tr>
               </thead>
               <tbody>
-                {products.map((product) => (
-                  <tr key={product.id}>
-                    <td>{product.title}</td>
-                    <td>{product.brand}</td>
-                    <td>{product.inStock}</td>
-                    <td>Ksh. {product.price}</td>
-                    <td>
-                      <Box
-                        sx={{ display: "flex", gap: 2, alignItems: "center" }}
-                      >
-                        <Typography level="body-xs">
-                          <Avatar
-                            size="40"
-                            color={Avatar.getRandomColor("sitebase", [
-                              "rgb(233, 150, 150)",
-                              "rgb(164, 231, 164)",
-                              "rgb(236, 224, 167)",
-                              "rgb(174, 185, 233)",
-                            ])}
-                            round={true}
-                            src={product.image}
-                            alt={product.title}
-                          />
-                        </Typography>
-                        <div>
-                          <Typography level="body-xs">
-                            {product.title}
-                          </Typography>
-                          <Typography level="body-xs">Laptop</Typography>
-                        </div>
-                      </Box>
-                    </td>
-                    <td>
-                      <EditStockModal product={product} />
-                    </td>
-                  </tr>
-                ))}
+                {search.length > 1
+                  ? searchResult.map((product) => (
+                      <tr key={product.id}>
+                        <td>{product.title}</td>
+                        <td>{product.batch}</td>
+                        <td>{product.inStock}</td>
+                        <td>Ksh. {product.cost}</td>
+                        <td>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              gap: 2,
+                              alignItems: "center",
+                            }}
+                          >
+                            <Typography level="body-xs">
+                              <Avatar
+                                size="40"
+                                color={Avatar.getRandomColor("sitebase", [
+                                  "rgb(233, 150, 150)",
+                                  "rgb(164, 231, 164)",
+                                  "rgb(236, 224, 167)",
+                                  "rgb(174, 185, 233)",
+                                ])}
+                                // round={true}
+                                src={product.image}
+                                alt={product.title}
+                              />
+                            </Typography>
+                            <div>
+                              <Typography level="body-xs">
+                                {product.title}
+                              </Typography>
+                              <Typography level="body-xs">
+                                {product.category}
+                              </Typography>
+                            </div>
+                          </Box>
+                        </td>
+                      </tr>
+                    ))
+                  : products.map((product) => (
+                      <tr key={product.id}>
+                        <td>{product.title}</td>
+                        <td>{product.batch}</td>
+                        <td>{product.inStock}</td>
+                        <td>Ksh. {product.cost}</td>
+                        <td>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              gap: 2,
+                              alignItems: "center",
+                            }}
+                          >
+                            <Typography level="body-xs">
+                              <Avatar
+                                size="40"
+                                color={Avatar.getRandomColor("sitebase", [
+                                  "rgb(233, 150, 150)",
+                                  "rgb(164, 231, 164)",
+                                  "rgb(236, 224, 167)",
+                                  "rgb(174, 185, 233)",
+                                ])}
+                                // round={true}
+                                src={product.image}
+                                alt={product.title}
+                              />
+                            </Typography>
+                            <div>
+                              <Typography level="body-xs">
+                                {product.title}
+                              </Typography>
+                              <Typography level="body-xs">
+                                {product.category}
+                              </Typography>
+                            </div>
+                          </Box>
+                        </td>
+                        
+                      </tr>
+                    ))}
               </tbody>
             </Table>
           </Sheet>
@@ -321,6 +403,7 @@ export default function OutOfStock() {
             className="Pagination-laptopUp"
             sx={{
               pt: 2,
+              mb:5,
               gap: 1,
               [`& .${iconButtonClasses.root}`]: { borderRadius: "50%" },
               display: {

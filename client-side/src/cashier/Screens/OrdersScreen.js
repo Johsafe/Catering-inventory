@@ -1,121 +1,136 @@
 import * as React from "react";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
+import Chip from "@mui/joy/Chip";
+import Divider from "@mui/joy/Divider";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
 import Input from "@mui/joy/Input";
-import Table from "@mui/joy/Table";
-import Sheet from "@mui/joy/Sheet";
-import Breadcrumbs from "@mui/joy/Breadcrumbs";
-import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
-import Typography from "@mui/joy/Typography";
-import Divider from "@mui/joy/Divider";
-import Select from "react-select";
-// import Option from "@mui/joy/Option";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
 import ModalClose from "@mui/joy/ModalClose";
+import Select from "react-select";
+import Option from "@mui/joy/Option";
+import Table from "@mui/joy/Table";
+import Sheet from "@mui/joy/Sheet";
+import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
+import Typography from "@mui/joy/Typography";
+import Menu from "@mui/joy/Menu";
+import MenuButton from "@mui/joy/MenuButton";
+import MenuItem from "@mui/joy/MenuItem";
+import Dropdown from "@mui/joy/Dropdown";
+import Breadcrumbs from "@mui/joy/Breadcrumbs";
 
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SearchIcon from "@mui/icons-material/Search";
+import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
+import AutorenewRoundedIcon from "@mui/icons-material/AutorenewRounded";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
+import moment from "moment";
 import Avatar from "react-avatar";
-import EditStockModal from "./EditProductStock";
 import { Link } from "react-router-dom";
 import { Container } from "@mui/material";
 import { base_url, getError } from "../Utils/Utils";
 import { toast } from "react-toastify";
 import SideBar from "../Layout/sideBar";
 
-export default function OutOfStock() {
-  const [open, setOpen] = React.useState(false);
-  const [products, setProducts] = React.useState([]);
-  const [filteredProducts, setFilteredProducts] = React.useState([]);
-  const [section, setSection] = React.useState([]);
-  const [category, setCategory] = React.useState([]);
+function RowMenu({ order }) {
+  return (
+    <Dropdown>
+      <MenuButton
+        slots={{ root: IconButton }}
+        slotProps={{ root: { variant: "plain", color: "neutral", size: "sm" } }}
+      >
+        <MoreHorizRoundedIcon />
+      </MenuButton>
+      <Menu size="sm" sx={{ minWidth: 140 }}>
+        <MenuItem>Edit</MenuItem>
+        <MenuItem>
+          <Link to={`/${order.id}/orders/mark`}>View</Link>
+        </MenuItem>
+        <Divider />
+        <MenuItem color="danger">Delete</MenuItem>
+      </Menu>
+    </Dropdown>
+  );
+}
 
+export default function OrdersScreen() {
+  const [open, setOpen] = React.useState(false);
+  const [paid, setPaid] = React.useState([]);
+  const [status, setStatus] = React.useState([]);
+  const [filteredOrders, setFilteredOrders] = React.useState([]);
+
+  //fetch order
+  const [orders, setOrders] = React.useState([]);
   React.useEffect(() => {
-    //get out-of-stock products
-    const fetchProducts = async () => {
+    const fetchOrder = async () => {
       try {
-        const fetched = await fetch(`${base_url}stats/out-of-stock`);
+        const fetched = await fetch(`${base_url}order/orders`);
         const jsonData = await fetched.json();
-        const uniqueBrands = [
-          ...new Set(jsonData.map((product) => product.brand)),
+        const uniqueStatus = [
+          ...new Set(jsonData.map((status) => status.orderStatus)),
         ];
-        const uniqueCate = [
-          ...new Set(jsonData.map((product) => product.category)),
+        const uniquePay = [
+          ...new Set(jsonData.map((product) => product.isPaid)),
         ];
-        setSection(uniqueBrands);
-        setCategory(uniqueCate);
-        setProducts(jsonData);
-        setFilteredProducts(jsonData);
+        setOrders(jsonData);
+        setStatus(uniqueStatus);
+        setPaid(uniquePay);
+        setFilteredOrders(jsonData)
+
       } catch (err) {
         toast.error(getError(err));
       }
     };
-
-    fetchProducts();
+    fetchOrder();
   }, []);
-
-  // filter by brand
-  function filterBrand(value) {
-    if (value === "All") {
-      setProducts(filteredProducts);
-      return;
+    // filter by Status
+    function filterStatus(value) {
+      if (value === "All") {
+        setOrders(filteredOrders);
+        return;
+      }
+  
+      const statusFilteredOrders = filteredOrders.filter(
+        (status) => status.orderStatus === value
+      );
+      setOrders(statusFilteredOrders);
     }
+    const statusOptions = status.map((s) => ({
+      value: s,
+      label:s,
+    }));
+  
 
-    const brandFilteredProducts = filteredProducts.filter(
-      (product) => product.brand === value
-    );
-    setProducts(brandFilteredProducts);
-  }
-
-  // filter by category
-  function filterCate(value) {
-    if (value === "All") {
-      setProducts(filteredProducts);
-      return;
-    }
-
-    const cateFilteredProducts = filteredProducts.filter(
-      (product) => product.category === value
-    );
-    setProducts(cateFilteredProducts);
-  }
-  const brandOptions = section.map((brand) => ({ value: brand, label: brand }));
-  const categoryOptions = category.map((cate) => ({
-    value: cate,
-    label: cate,
-  }));
 
   // filter
   const renderFilters = () => (
     <React.Fragment>
-      <FormControl size="sm">
-        <FormLabel>Brand</FormLabel>
+      <FormControl size="sm" style={{ zIndex: 100 }}>
+        <FormLabel>Status</FormLabel>
         <Select
           size="sm"
           placeholder="Filter by brand"
-          onChange={(e) => filterBrand(e.value)}
-          options={[{ value: "All", label: "All" }, ...brandOptions]}
+          onChange={(e) => filterStatus(e.value)}
+          options={[{ value: "All", label: "All" }, ...statusOptions ]}
         />
       </FormControl>
       <FormControl size="sm">
         <FormLabel>Category</FormLabel>
-        <Select
-          size="sm"
-          placeholder="Filter by category"
-          onChange={(e) => filterCate(e.value)}
-          options={[{ value: "All", label: "All" }, ...categoryOptions]}
-        />
+        <Select size="sm" placeholder="All">
+          <Option value="all">All</Option>
+          <Option value="pending">Pending</Option>
+          <Option value="Completed">Completed</Option>
+        </Select>
       </FormControl>
     </React.Fragment>
   );
-
   return (
     <div style={{ display: "flex" }}>
       <SideBar />
@@ -187,7 +202,7 @@ export default function OutOfStock() {
                 Dashboard
               </Link>
               <Typography color="primary" fontWeight={500} fontSize={12}>
-                Products
+                Orders
               </Typography>
             </Breadcrumbs>
           </Box>
@@ -203,20 +218,18 @@ export default function OutOfStock() {
             }}
           >
             <Typography level="h2" component="h1">
-              Products Out Of Stock
+              Orders
             </Typography>
-            <Link to="/product">
-              <Button
-                color="primary"
-                // startDecorator={<AddIcon />}
-                size="sm"
-              >
-                Back to products
-              </Button>
-            </Link>
+            <Button
+              color="primary"
+              startDecorator={<DownloadRoundedIcon />}
+              size="sm"
+            >
+              Download PDF
+            </Button>
           </Box>
 
-          {/* search for products */}
+          {/* search for order */}
           <Box
             className="SearchAndFilters-tabletUp"
             sx={{
@@ -231,7 +244,7 @@ export default function OutOfStock() {
             }}
           >
             <FormControl sx={{ flex: 1 }} size="sm">
-              <FormLabel>Search for product</FormLabel>
+              <FormLabel>Search for order</FormLabel>
               <Input
                 size="sm"
                 placeholder="Search"
@@ -268,49 +281,81 @@ export default function OutOfStock() {
             >
               <thead>
                 <tr>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Title</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Brand</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>InStock</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Price</th>
-                  <th style={{ width: 240, padding: "12px 6px" }}>Product</th>
+                  <th style={{ width: 120, padding: "12px 6px" }}>Invoice</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Date</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Status</th>
+                  <th style={{ width: 240, padding: "12px 6px" }}>Customer</th>
                   <th style={{ width: 140, padding: "12px 6px" }}> </th>
                 </tr>
               </thead>
               <tbody>
-                {products.map((product) => (
-                  <tr key={product.id}>
-                    <td>{product.title}</td>
-                    <td>{product.brand}</td>
-                    <td>{product.inStock}</td>
-                    <td>Ksh. {product.price}</td>
+                {orders.map((order) => (
+                  <tr key={order.id}>
+                    <td>
+                      <Typography level="body-xs">{order.order_no}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">
+                        {moment(order.createdAt).format("ll")}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Chip
+                        variant="soft"
+                        size="sm"
+                        startDecorator={
+                          {
+                            Completed: <CheckRoundedIcon />,
+                            Pending: <AutorenewRoundedIcon />,
+                            // Cancelled: <BlockIcon />,
+                          }[order.orderStatus]
+                        }
+                        color={
+                          {
+                            Completed: "success",
+                            Pending: "neutral",
+                            // Cancelled: "danger",
+                          }[order.orderStatus]
+                        }
+                      >
+                        {order.orderStatus}
+                      </Chip>
+                    </td>
                     <td>
                       <Box
                         sx={{ display: "flex", gap: 2, alignItems: "center" }}
                       >
-                        <Typography level="body-xs">
-                          <Avatar
-                            size="40"
-                            color={Avatar.getRandomColor("sitebase", [
-                              "rgb(233, 150, 150)",
-                              "rgb(164, 231, 164)",
-                              "rgb(236, 224, 167)",
-                              "rgb(174, 185, 233)",
-                            ])}
-                            round={true}
-                            src={product.image}
-                            alt={product.title}
-                          />
-                        </Typography>
+                        <Avatar
+                          size="40"
+                          color={Avatar.getRandomColor("sitebase", [
+                            "rgb(233, 150, 150)",
+                            "rgb(164, 231, 164)",
+                            "rgb(236, 224, 167)",
+                            "rgb(174, 185, 233)",
+                          ])}
+                          round={true}
+                          name={`${order.shippingAddress.fname} ${order.shippingAddress.sname}`}
+                        />
                         <div>
                           <Typography level="body-xs">
-                            {product.title}
+                            {order.shippingAddress.fname}{" "}
+                            {order.shippingAddress.sname}
                           </Typography>
-                          <Typography level="body-xs">Laptop</Typography>
+                          <Typography level="body-xs">
+                            {order.shippingAddress.email}
+                          </Typography>
                         </div>
                       </Box>
                     </td>
                     <td>
-                      <EditStockModal product={product} />
+                      <Box
+                        sx={{ display: "flex", gap: 2, alignItems: "center" }}
+                      >
+                        <Link level="body-xs" component="button">
+                          Download
+                        </Link>
+                        <RowMenu order={order} />
+                      </Box>
                     </td>
                   </tr>
                 ))}

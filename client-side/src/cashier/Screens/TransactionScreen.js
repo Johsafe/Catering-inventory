@@ -1,123 +1,172 @@
 import * as React from "react";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
+import Chip from "@mui/joy/Chip";
+import Divider from "@mui/joy/Divider";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
+import Link from "@mui/joy/Link";
 import Input from "@mui/joy/Input";
-import Table from "@mui/joy/Table";
-import Sheet from "@mui/joy/Sheet";
-import Breadcrumbs from "@mui/joy/Breadcrumbs";
-import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
-import Typography from "@mui/joy/Typography";
-import Divider from "@mui/joy/Divider";
-import Select from "react-select";
-// import Option from "@mui/joy/Option";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
 import ModalClose from "@mui/joy/ModalClose";
+import Select from "react-select";
+import Option from "@mui/joy/Option";
+import Table from "@mui/joy/Table";
+import Sheet from "@mui/joy/Sheet";
+import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
+import Typography from "@mui/joy/Typography";
+import Menu from "@mui/joy/Menu";
+import MenuButton from "@mui/joy/MenuButton";
+import MenuItem from "@mui/joy/MenuItem";
+import Dropdown from "@mui/joy/Dropdown";
 
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SearchIcon from "@mui/icons-material/Search";
+import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
+import AutorenewRoundedIcon from "@mui/icons-material/AutorenewRounded";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
+import { Breadcrumbs } from "@mui/joy";
+import BlockIcon from "@mui/icons-material/Block";
 import Avatar from "react-avatar";
-import EditStockModal from "./EditProductStock";
-import { Link } from "react-router-dom";
 import { Container } from "@mui/material";
-import { base_url, getError } from "../Utils/Utils";
-import { toast } from "react-toastify";
 import SideBar from "../Layout/sideBar";
 
-export default function OutOfStock() {
+const rows = [
+  {
+    id: "INV-1227",
+    date: "Feb 3, 2023",
+    tranx: "QERTYU",
+    status: "Paid",
+    amount: 559.0,
+    avatar:"https://material-kit-react.devias.io/assets/avatars/avatar-miron-vitold.png",
+    customer: {
+      initial: "S",
+      name: "Sachin Flynn",
+      phone: "254766786789",
+    },
+  },
+  {
+    id: "INV-1226",
+    date: "Feb 3, 2023",
+    tranx: "QEFGHN",
+    status: "Cancelled",
+    amount: 989.0,
+    avatar:"https://material-kit-react.devias.io/assets/avatars/avatar-iulia-albu.png",
+    customer: {
+      initial: "B",
+      name: "Bradley Rosales",
+      phone: "254766789590",
+    },
+  },
+  {
+    id: "INV-1221",
+    date: "Feb 3, 2023",
+    tranx: "QYUIOP",
+    status: "Refunded",
+    amount: 67999.0,
+    avatar:"https://material-kit-react.devias.io/assets/avatars/avatar-nasimiyu-danai.png",
+    customer: {
+      initial: "M",
+      name: "Maria Macdonald",
+      phone: "25476654456",
+    },
+  },
+  {
+    id: "INV-1220",
+    date: "Feb 3, 2023",
+    tranx: "QRTYUI",
+    status: "Paid",
+    amount: 30059.0,
+    avatar:"https://material-kit-react.devias.io/assets/avatars/avatar-jie-yan-song.png",
+    customer: {
+      initial: "C",
+      name: "Charles Fulton",
+      phone: "254766789456",
+    },
+  },
+  {
+    id: "INV-1219",
+    date: "Feb 3, 2023",
+    tranx: "QERTYU",
+    status: "Cancelled",
+    amount: 989659.0,
+    avatar:"https://material-kit-react.devias.io/assets/avatars/avatar-omar-darboe.png",
+    customer: {
+      initial: "J",
+      name: "Jay Hooper",
+      phone: "254765467890",
+    },
+  },
+  {
+    id: "INV-1216",
+    date: "Feb 3, 2023",
+    tranx: "QWERTY",
+    status: "Refunded",
+    amount: 679659.0,
+    avatar:"https://material-kit-react.devias.io/assets/avatars/avatar-anika-visser.png",
+    customer: {
+      initial: "A",
+      name: "Anika Rosales",
+      phone: "254765432456",
+    },
+  },
+];
+
+function RowMenu() {
+  return (
+    <Dropdown>
+      <MenuButton
+        slots={{ root: IconButton }}
+        slotProps={{ root: { variant: "plain", color: "neutral", size: "sm" } }}
+      >
+        <MoreHorizRoundedIcon />
+      </MenuButton>
+      <Menu size="sm" sx={{ minWidth: 140 }}>
+        <MenuItem>Edit</MenuItem>
+        <MenuItem>View</MenuItem>
+        <Divider />
+        <MenuItem color="danger">Delete</MenuItem>
+      </Menu>
+    </Dropdown>
+  );
+}
+
+export default function TransactionScreen() {
   const [open, setOpen] = React.useState(false);
-  const [products, setProducts] = React.useState([]);
-  const [filteredProducts, setFilteredProducts] = React.useState([]);
-  const [section, setSection] = React.useState([]);
-  const [category, setCategory] = React.useState([]);
-
-  React.useEffect(() => {
-    //get out-of-stock products
-    const fetchProducts = async () => {
-      try {
-        const fetched = await fetch(`${base_url}stats/out-of-stock`);
-        const jsonData = await fetched.json();
-        const uniqueBrands = [
-          ...new Set(jsonData.map((product) => product.brand)),
-        ];
-        const uniqueCate = [
-          ...new Set(jsonData.map((product) => product.category)),
-        ];
-        setSection(uniqueBrands);
-        setCategory(uniqueCate);
-        setProducts(jsonData);
-        setFilteredProducts(jsonData);
-      } catch (err) {
-        toast.error(getError(err));
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
-  // filter by brand
-  function filterBrand(value) {
-    if (value === "All") {
-      setProducts(filteredProducts);
-      return;
-    }
-
-    const brandFilteredProducts = filteredProducts.filter(
-      (product) => product.brand === value
-    );
-    setProducts(brandFilteredProducts);
-  }
-
-  // filter by category
-  function filterCate(value) {
-    if (value === "All") {
-      setProducts(filteredProducts);
-      return;
-    }
-
-    const cateFilteredProducts = filteredProducts.filter(
-      (product) => product.category === value
-    );
-    setProducts(cateFilteredProducts);
-  }
-  const brandOptions = section.map((brand) => ({ value: brand, label: brand }));
-  const categoryOptions = category.map((cate) => ({
-    value: cate,
-    label: cate,
-  }));
-
-  // filter
   const renderFilters = () => (
     <React.Fragment>
       <FormControl size="sm">
-        <FormLabel>Brand</FormLabel>
+        <FormLabel>Status</FormLabel>
         <Select
           size="sm"
-          placeholder="Filter by brand"
-          onChange={(e) => filterBrand(e.value)}
-          options={[{ value: "All", label: "All" }, ...brandOptions]}
-        />
+          placeholder="Filter by status"
+          slotProps={{ button: { sx: { whiteSpace: "nowrap" } } }}
+        >
+          <Option value="paid">Paid</Option>
+          <Option value="pending">Pending</Option>
+          <Option value="refunded">Refunded</Option>
+          <Option value="cancelled">Cancelled</Option>
+        </Select>
       </FormControl>
       <FormControl size="sm">
         <FormLabel>Category</FormLabel>
-        <Select
-          size="sm"
-          placeholder="Filter by category"
-          onChange={(e) => filterCate(e.value)}
-          options={[{ value: "All", label: "All" }, ...categoryOptions]}
-        />
+        <Select size="sm" placeholder="All">
+          <Option value="all">All</Option>
+          <Option value="refund">Refund</Option>
+          <Option value="purchase">Purchase</Option>
+          <Option value="debit">Debit</Option>
+        </Select>
       </FormControl>
     </React.Fragment>
   );
-
   return (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex" }}>      
       <SideBar />
       <Container>
         <React.Fragment>
@@ -187,7 +236,7 @@ export default function OutOfStock() {
                 Dashboard
               </Link>
               <Typography color="primary" fontWeight={500} fontSize={12}>
-                Products
+                Transactions
               </Typography>
             </Breadcrumbs>
           </Box>
@@ -203,20 +252,17 @@ export default function OutOfStock() {
             }}
           >
             <Typography level="h2" component="h1">
-              Products Out Of Stock
+              Transactions
             </Typography>
-            <Link to="/product">
-              <Button
-                color="primary"
-                // startDecorator={<AddIcon />}
-                size="sm"
-              >
-                Back to products
-              </Button>
-            </Link>
+            <Button
+              color="primary"
+              startDecorator={<DownloadRoundedIcon />}
+              size="sm"
+            >
+              Download PDF
+            </Button>
           </Box>
 
-          {/* search for products */}
           <Box
             className="SearchAndFilters-tabletUp"
             sx={{
@@ -231,7 +277,7 @@ export default function OutOfStock() {
             }}
           >
             <FormControl sx={{ flex: 1 }} size="sm">
-              <FormLabel>Search for product</FormLabel>
+              <FormLabel>Search for transaction</FormLabel>
               <Input
                 size="sm"
                 placeholder="Search"
@@ -268,49 +314,88 @@ export default function OutOfStock() {
             >
               <thead>
                 <tr>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Title</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Brand</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>InStock</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Price</th>
-                  <th style={{ width: 240, padding: "12px 6px" }}>Product</th>
+                  <th style={{ width: 120, padding: "12px 6px" }}>Tranx_Id</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Date</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Invoice</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Amount</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Status</th>
+                  <th style={{ width: 240, padding: "12px 6px" }}>Customer</th>
                   <th style={{ width: 140, padding: "12px 6px" }}> </th>
                 </tr>
               </thead>
               <tbody>
-                {products.map((product) => (
-                  <tr key={product.id}>
-                    <td>{product.title}</td>
-                    <td>{product.brand}</td>
-                    <td>{product.inStock}</td>
-                    <td>Ksh. {product.price}</td>
+                {rows.map((row) => (
+                  <tr key={row.id}>
+                    <td>
+                      <Typography level="body-xs">{row.tranx}</Typography>
+                    </td>
+
+                    <td>
+                      <Typography level="body-xs">{row.date}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{row.id}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">Ksh. {row.amount}</Typography>
+                    </td>
+                    <td>
+                      <Chip
+                        variant="soft"
+                        size="sm"
+                        startDecorator={
+                          {
+                            Paid: <CheckRoundedIcon />,
+                            Refunded: <AutorenewRoundedIcon />,
+                            Cancelled: <BlockIcon />,
+                          }[row.status]
+                        }
+                        color={
+                          {
+                            Paid: "success",
+                            Refunded: "neutral",
+                            Cancelled: "danger",
+                          }[row.status]
+                        }
+                      >
+                        {row.status}
+                      </Chip>
+                    </td>
                     <td>
                       <Box
                         sx={{ display: "flex", gap: 2, alignItems: "center" }}
                       >
-                        <Typography level="body-xs">
-                          <Avatar
-                            size="40"
-                            color={Avatar.getRandomColor("sitebase", [
-                              "rgb(233, 150, 150)",
-                              "rgb(164, 231, 164)",
-                              "rgb(236, 224, 167)",
-                              "rgb(174, 185, 233)",
-                            ])}
-                            round={true}
-                            src={product.image}
-                            alt={product.title}
-                          />
-                        </Typography>
+                        <Avatar
+                          size="40"
+                          color={Avatar.getRandomColor("sitebase", [
+                            "rgb(233, 150, 150)",
+                            "rgb(164, 231, 164)",
+                            "rgb(236, 224, 167)",
+                            "rgb(174, 185, 233)",
+                          ])}
+                          round={true}
+                          src={row.avatar}
+                          name={row.customer.name}
+                        />
                         <div>
                           <Typography level="body-xs">
-                            {product.title}
+                            {row.customer.name}
                           </Typography>
-                          <Typography level="body-xs">Laptop</Typography>
+                          <Typography level="body-xs">
+                            {row.customer.phone}
+                          </Typography>
                         </div>
                       </Box>
                     </td>
                     <td>
-                      <EditStockModal product={product} />
+                      <Box
+                        sx={{ display: "flex", gap: 2, alignItems: "center" }}
+                      >
+                        <Link level="body-xs" component="button">
+                          Download
+                        </Link>
+                        <RowMenu />
+                      </Box>
                     </td>
                   </tr>
                 ))}
