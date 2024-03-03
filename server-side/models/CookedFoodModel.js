@@ -1,10 +1,18 @@
 module.exports = (sequelize, DataTypes) => {
   const CookedFood = sequelize.define("CookedFood", {
     recipe_id: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     foodName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    image: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    cloudinary_id: {
       type: DataTypes.STRING,
       allowNull: false,
     },

@@ -2,7 +2,8 @@ const express = require("express");
 const recipeRouter = express.Router();
 const { Recipe, Products, Ingredients, CookedFood } = require("../models");
 const { Op } = require("sequelize");
-
+const multerUpload = require("../middleware/multer");
+const cloudinary = require("../config/cloudinary");
 // const generateRecipeCode = () => {
 //   const characters = "0123456789";
 //   let recipeCode = "";
@@ -15,6 +16,8 @@ const { Op } = require("sequelize");
 
 //   return `R-${recipeCode}`;
 // };
+
+//-----------------------------RECIPE ROUTE-----------------------
 
 recipeRouter.post("/create", async (req, res) => {
   try {
@@ -109,79 +112,6 @@ recipeRouter.post("/updatestock", async (req, res) => {
   }
 });
 
-// Route to remove ingredients from stock when a recipe is clicked and save the recipe as cooked food
-recipeRouter.post("/updateStockAndSave", async (req, res) => {
-  try {
-    const { recipe_id, foodName, price } = req.body;
-
-    // Fetch all ingredients for the specified recipe
-    const ingredients = await Ingredients.findAll({
-      where: {
-        recipe_id: recipe_id,
-      },
-    });
-
-    // Update stock levels for each ingredient
-    await Promise.all(
-      ingredients.map(async (ingredient) => {
-        const product = await Products.findByPk(ingredient.pdct_id);
-        if (!product) {
-          throw new Error(`Product with ID ${ingredient.pdct_id} not found`);
-        }
-        if (product.inStock < ingredient.quantity) {
-          throw new Error(
-            `Insufficient stock for product with ID ${ingredient.pdct_id}`
-          );
-        }
-
-        // Subtract ingredient quantity from product stock
-        product.inStock -= ingredient.quantity;
-        await product.save();
-      })
-    );
-    // Fetch the recipe and its ingredients
-    const recipe = await Recipe.findOne(
-      {
-        where: { recipe_id: req.body.recipe_id },
-        include: [
-          {
-            model: Ingredients,
-            attributes: ["quantity", "product_name"],
-          },
-        ],
-      }
-      // {
-      //   include: [Ingredients]
-
-      // }
-    );
-
-    if (!recipe) {
-      return res.status(404).json({ message: "Recipe not found" });
-    }
-
-    // Create a new cooked food item
-    const cookedFood = await CookedFood.create({
-      recipe_id: recipe_id,
-      foodName,
-      price,
-    });
-
-    // Associate the cooked food item with the recipe
-    await cookedFood.setRecipe(recipe);
-
-    res.status(201).json({
-      message: "Stock updated and cooked food saved successfully",
-      cookedFood,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Error updating stock or saving cooked food",
-      error: error.message,
-    });
-  }
-});
-
 // get all recipes
 recipeRouter.get("/recipes", async (req, res) => {
   try {
@@ -200,7 +130,7 @@ recipeRouter.get("/fullrecipes/:id", async (req, res) => {
       include: [
         {
           model: Ingredients,
-          attributes: ["id", "quantity", "product_name","product_image"],
+          attributes: ["id", "quantity", "product_name", "product_image"],
         },
       ],
     });
@@ -235,7 +165,7 @@ recipeRouter.delete("/recipe/:id", async (req, res) => {
     // Then, delete the recipe
     await recipe.destroy();
 
-    res.json({ message: "Recipe and its ingredients deleted successfully"});
+    res.json({ message: "Recipe and its ingredients deleted successfully" });
   } catch (error) {
     console.error("Error deleting recipe and its ingredients:", error);
     res
@@ -303,5 +233,167 @@ recipeRouter.delete("/recipe/:id", async (req, res) => {
 //     res.status(500).json({ error: "Failed to update recipe and ingredients" });
 //   }
 // });
+
+//---------------------COOKED FOOD ROUTE---------------------------------
+
+// Route to remove ingredients from stock when a recipe is clicked and save the recipe as cooked food
+recipeRouter.post(
+  "/updateStockAndSave",
+  multerUpload.single("image"),
+  async (req, res) => {
+    try {
+      const { recipe_id, foodName, price } = req.body;
+
+      // Fetch all ingredients for the specified recipe
+      const ingredients = await Ingredients.findAll({
+        where: {
+          recipe_id: recipe_id,
+        },
+      });
+      //upload image to cloudinary
+
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+      console.log(req.file)
+      // Upload image to Cloudinary
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "catering",
+      });
+      const imageUrl = result.secure_url;
+      const imageId = result.public_id;
+
+      // Update stock levels for each ingredient
+      await Promise.all(
+        ingredients.map(async (ingredient) => {
+          const product = await Products.findByPk(ingredient.pdct_id);
+          if (!product) {
+            throw new Error(`Product with ID ${ingredient.pdct_id} not found`);
+          }
+          if (product.inStock < ingredient.quantity) {
+            throw new Error(
+              `Insufficient stock for product with ID ${ingredient.pdct_id}`
+            );
+          }
+
+          // Subtract ingredient quantity from product stock
+          product.inStock -= ingredient.quantity;
+          await product.save();
+        })
+      );
+      // Fetch the recipe and its ingredients
+      const recipeId = req.body.recipe_id; // Ensure recipe_id is passed correctly from the request body
+      const recipe = await Recipe.findOne({
+        where: { id: recipeId }, // Use the correct attribute name, typically 'id'
+        include: [
+          {
+            model: Ingredients,
+            attributes: ["quantity", "product_name"],
+          },
+        ],
+      });
+      
+      if (!recipe) {
+        return res.status(404).json({ message: "Recipe not found" });
+      }
+      
+
+      // Create a new cooked food item
+      const cookedFood = await CookedFood.create({
+        recipe_id: recipe_id,
+        foodName,
+        image: imageUrl,
+        cloudinary_id: imageId,
+        price,
+      });
+
+      // Associate the cooked food item with the recipe
+      await cookedFood.setRecipe(recipe);
+
+      res.status(201).json({
+        message: "Stock updated and cooked food saved successfully",
+        cookedFood,
+        imagefile: req.file,
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "Error updating stock or saving cooked food",
+        error: error.message,
+      });
+    }
+  }
+);
+//get all cooked food
+recipeRouter.get('/cookedFood', async (req, res) => {
+  try {
+    // Fetch all cooked food items
+    const cookedFood = await CookedFood.findAll();
+
+    res.status(200).json(cookedFood);
+  } catch (error) {
+    console.error('Error fetching cooked food:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+//get a cooked food
+recipeRouter.get('/cookedFood/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Fetch the cooked food item with the given ID
+    const cookedFood = await CookedFood.findByPk(id);
+
+    if (!cookedFood) {
+      return res.status(404).json({ message: 'Cooked food not found' });
+    }
+
+    res.status(200).json(cookedFood);
+  } catch (error) {
+    console.error('Error fetching cooked food:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+//delete a food item
+recipeRouter.delete('/cookedFood/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Fetch the cooked food item with the given ID
+    const cookedFood = await CookedFood.findByPk(id, {
+      include: {
+        model: Recipe,
+        include: Ingredients
+      }
+    });
+
+    if (!cookedFood) {
+      return res.status(404).json({ message: 'Cooked food not found' });
+    }
+
+    // Loop through the ingredients of the associated recipe
+    await Promise.all(cookedFood.Recipe.Ingredients.map(async (ingredient) => {
+      // Find the product associated with the ingredient
+      const product = await Products.findByPk(ingredient.pdct_id);
+      if (!product) {
+        throw new Error(`Product with ID ${ingredient.pdct_id} not found`);
+      }
+
+      // Add the removed quantity back to the product stock
+      product.inStock += ingredient.quantity;
+      await product.save();
+    }));
+
+    // Delete the cooked food item
+    await cookedFood.destroy();
+
+    res.status(200).json({ message: 'Cooked food deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting cooked food:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
 
 module.exports = recipeRouter;
