@@ -29,13 +29,14 @@ CREATE TABLE `cookedfoods` (
   `image` varchar(255) NOT NULL,
   `cloudinary_id` varchar(255) NOT NULL,
   `price` float NOT NULL,
+  `quantity` int NOT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   `RecipeId` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `RecipeId` (`RecipeId`),
   CONSTRAINT `cookedfoods_ibfk_1` FOREIGN KEY (`RecipeId`) REFERENCES `recipes` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,7 +45,7 @@ CREATE TABLE `cookedfoods` (
 
 LOCK TABLES `cookedfoods` WRITE;
 /*!40000 ALTER TABLE `cookedfoods` DISABLE KEYS */;
-INSERT INTO `cookedfoods` VALUES (2,4,'Sukumawiki','https://res.cloudinary.com/drselhsl4/image/upload/v1709484003/catering/m1inwcsjx2e1fnnejpqj.jpg','catering/m1inwcsjx2e1fnnejpqj',20,'2024-03-03 16:40:04','2024-03-03 16:40:04',4);
+INSERT INTO `cookedfoods` VALUES (1,4,'Salad','https://res.cloudinary.com/drselhsl4/image/upload/v1709578558/catering/a4hsrbrvz4wj339vrsak.jpg','catering/a4hsrbrvz4wj339vrsak',20,295,'2024-03-04 18:55:59','2024-03-09 19:43:14',4);
 /*!40000 ALTER TABLE `cookedfoods` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -94,18 +95,20 @@ DROP TABLE IF EXISTS `orderitems`;
 CREATE TABLE `orderitems` (
   `id` int NOT NULL AUTO_INCREMENT,
   `order_no` varchar(255) NOT NULL,
-  `food_id` int NOT NULL,
+  `OrderId` int NOT NULL,
+  `CookedFoodId` int NOT NULL,
   `quantity` int NOT NULL,
   `food_name` varchar(255) NOT NULL,
   `food_image` varchar(255) NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
-  `OrderOrderNo` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `OrderOrderNo` (`OrderOrderNo`),
-  CONSTRAINT `orderitems_ibfk_1` FOREIGN KEY (`OrderOrderNo`) REFERENCES `orders` (`order_no`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `OrderId` (`OrderId`),
+  KEY `CookedFoodId` (`CookedFoodId`),
+  CONSTRAINT `orderitems_ibfk_1` FOREIGN KEY (`OrderId`) REFERENCES `orders` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `orderitems_ibfk_2` FOREIGN KEY (`CookedFoodId`) REFERENCES `cookedfoods` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -114,6 +117,7 @@ CREATE TABLE `orderitems` (
 
 LOCK TABLES `orderitems` WRITE;
 /*!40000 ALTER TABLE `orderitems` DISABLE KEYS */;
+INSERT INTO `orderitems` VALUES (1,'ORD-9EC166',24,1,5,'Salad','https://res.cloudinary.com/drselhsl4/image/upload/v1709578558/catering/a4hsrbrvz4wj339vrsak.jpg',20.00,'2024-03-09 19:43:14','2024-03-09 19:43:14');
 /*!40000 ALTER TABLE `orderitems` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -125,15 +129,15 @@ DROP TABLE IF EXISTS `orders`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `orders` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `order_no` varchar(255) NOT NULL,
   `customer` varchar(255) NOT NULL,
   `total` float NOT NULL DEFAULT '0',
   `paymentMethod` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
-  PRIMARY KEY (`order_no`),
-  UNIQUE KEY `order_no` (`order_no`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -142,6 +146,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+INSERT INTO `orders` VALUES (24,'ORD-9EC166','Asgard Tel',100,'Cash','2024-03-09 19:43:14','2024-03-09 19:43:14');
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -177,7 +182,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` VALUES (3,'sukumawiki','end of june',8000,1,'instock','https://res.cloudinary.com/drselhsl4/image/upload/v1708347735/catering/twj0gr6yhbxvjm6ba8lm.png','catering/twj0gr6yhbxvjm6ba8lm','vegetable','June','sukumawiki',16000,'2024-02-19 13:02:16','2024-03-03 16:40:29'),(4,'Tomatoes','end of june',8000,1,'instock','https://res.cloudinary.com/drselhsl4/image/upload/v1708488493/catering/tknwaecnzbzzirlvkuaw.webp','catering/tknwaecnzbzzirlvkuaw','vegetable','June','tomatoes',145,'2024-02-21 04:08:13','2024-03-03 16:40:29'),(5,'Onions','12-01-2024',12000,3,'instock','https://res.cloudinary.com/drselhsl4/image/upload/v1708518816/catering/qvam80rupst54pqr0mnx.webp','catering/qvam80rupst54pqr0mnx','Vegetable','January','Onions is a vegetable',18500,'2024-02-21 12:33:37','2024-03-03 16:40:29');
+INSERT INTO `products` VALUES (3,'sukumawiki','end of june',8000,1,'instock','https://res.cloudinary.com/drselhsl4/image/upload/v1708347735/catering/twj0gr6yhbxvjm6ba8lm.png','catering/twj0gr6yhbxvjm6ba8lm','vegetable','June','sukumawiki',10000,'2024-02-19 13:02:16','2024-03-04 18:55:59'),(4,'Tomatoes','end of june',8000,1,'instock','https://res.cloudinary.com/drselhsl4/image/upload/v1708488493/catering/tknwaecnzbzzirlvkuaw.webp','catering/tknwaecnzbzzirlvkuaw','vegetable','June','tomatoes',19850,'2024-02-21 04:08:13','2024-03-04 18:55:59'),(5,'Onions','12-01-2024',12000,3,'instock','https://res.cloudinary.com/drselhsl4/image/upload/v1708518816/catering/qvam80rupst54pqr0mnx.webp','catering/qvam80rupst54pqr0mnx','Vegetable','January','Onions is a vegetable',15500,'2024-02-21 12:33:37','2024-03-04 18:55:59');
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -303,4 +308,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-03-03 19:42:24
+-- Dump completed on 2024-03-10  0:18:40

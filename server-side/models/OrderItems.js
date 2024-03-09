@@ -4,7 +4,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      food_id: {
+      OrderId:{
+        type:DataTypes.INTEGER,
+        allowNull:false,
+      },
+      CookedFoodId: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
@@ -33,8 +37,9 @@ module.exports = (sequelize, DataTypes) => {
     });
   
     OrderItems.associate = function (models) {
+      // OrderItems.belongsTo(models.Order,{ foreignKey: 'OrderId' });
       OrderItems.belongsTo(models.Order);
-    //   OrderItems.belongsTo(models.Products);
+      OrderItems.belongsTo(models.CookedFood);
     };
   
     return OrderItems;

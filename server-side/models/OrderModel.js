@@ -3,8 +3,6 @@ module.exports = (sequelize, DataTypes) => {
       order_no: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
-        primaryKey: true,
       },
       customer:{
         type: DataTypes.STRING,

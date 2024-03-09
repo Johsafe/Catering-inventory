@@ -20,6 +20,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.FLOAT,
       allowNull: false,
     },
+    quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        min: 1,
+      },
+    },
   });
   CookedFood.associate = function (models) {
     CookedFood.belongsTo(models.Recipe);

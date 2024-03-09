@@ -242,7 +242,7 @@ recipeRouter.post(
   multerUpload.single("image"),
   async (req, res) => {
     try {
-      const { recipe_id, foodName, price } = req.body;
+      const { recipe_id, foodName, price,quantity } = req.body;
 
       // Fetch all ingredients for the specified recipe
       const ingredients = await Ingredients.findAll({
@@ -305,6 +305,7 @@ recipeRouter.post(
         image: imageUrl,
         cloudinary_id: imageId,
         price,
+        quantity
       });
 
       // Associate the cooked food item with the recipe
@@ -390,6 +391,52 @@ recipeRouter.delete('/cookedFood/:id', async (req, res) => {
     res.status(200).json({ message: 'Cooked food deleted successfully' });
   } catch (error) {
     console.error('Error deleting cooked food:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+recipeRouter.put('/cookedFood/:id',multerUpload.single("image"), async (req, res) => {
+  const { id } = req.params;
+  const { foodName, price, recipe_id } = req.body;
+
+  try {
+    // Fetch the cooked food item with the given ID
+    const cookedFood = await CookedFood.findByPk(id, {
+      include: {
+        model: Recipe,
+        include: Ingredients
+      }
+    });
+
+    if (!cookedFood) {
+      return res.status(404).json({ message: 'Cooked food not found' });
+    }
+
+    // Update the cooked food item attributes
+    cookedFood.foodName = foodName;
+    cookedFood.price = price;
+    cookedFood.recipe_id = recipe_id;
+
+    if (req.file) {
+      // Delete the existing image from Cloudinary
+      await cloudinary.uploader.destroy(cookedFood.cloudinary_id);
+
+      // Upload the new image to Cloudinary
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "catering",
+      });
+
+      // Extract the new image URL from the Cloudinary response
+      // existingProduct.image = result.secure_url;
+      cookedFood.image = result.secure_url;
+      cookedFood.cloudinary_id = result.public_id;
+    }
+
+    await cookedFood.save();
+
+    res.status(200).json({ message: 'Cooked food updated successfully', cookedFood });
+  } catch (error) {
+    console.error('Error updating cooked food:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
