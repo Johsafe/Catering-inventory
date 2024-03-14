@@ -132,7 +132,7 @@ export default function SideBar() {
               <ListItemButton role="menuitem" component="a" href="/cashier/product">
                 <LocalMallIcon />
                 <ListItemContent>
-                  <Typography level="title-sm">Products</Typography>
+                  <Typography level="title-sm">Foods</Typography>
                 </ListItemContent>
               </ListItemButton>
             </ListItem>
@@ -153,13 +153,14 @@ export default function SideBar() {
                 </ListItemContent>
               </ListItemButton>
             </ListItem>
-            <ListItemButton role="menuitem" component="a" href="/cashier/transaction">
+            
+            <ListItemButton role="menuitem" component="a" href="">{/* /cashier/transaction */}
               <PaidIcon />
               <ListItemContent>
                 <Typography level="title-sm">Transaction</Typography>
               </ListItemContent>
             </ListItemButton>
-            <ListItemButton role="menuitem" component="a" href="/cashier/report">
+            <ListItemButton role="menuitem" component="a" href="">{/* /cashier/report */}
               <GroupRoundedIcon />
               <ListItemContent>
                 <Typography level="title-sm">Reports</Typography>

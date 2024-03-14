@@ -314,11 +314,11 @@ export default function TransactionScreen() {
             >
               <thead>
                 <tr>
-                  <th style={{ width: 120, padding: "12px 6px" }}>Tranx_Id</th>
+                  {/* <th style={{ width: 120, padding: "12px 6px" }}>Tranx_Id</th> */}
                   <th style={{ width: 140, padding: "12px 6px" }}>Date</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Invoice</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Order Id</th>
                   <th style={{ width: 140, padding: "12px 6px" }}>Amount</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Status</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Payment Method</th>
                   <th style={{ width: 240, padding: "12px 6px" }}>Customer</th>
                   <th style={{ width: 140, padding: "12px 6px" }}> </th>
                 </tr>

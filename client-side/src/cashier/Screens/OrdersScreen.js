@@ -49,7 +49,6 @@ function RowMenu({ order }) {
         <MoreHorizRoundedIcon />
       </MenuButton>
       <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem>Edit</MenuItem>
         <MenuItem>
           <Link to={`/${order.id}/orders/mark`}>View</Link>
         </MenuItem>
@@ -283,7 +282,8 @@ export default function OrdersScreen() {
                 <tr>
                   <th style={{ width: 120, padding: "12px 6px" }}>Invoice</th>
                   <th style={{ width: 140, padding: "12px 6px" }}>Date</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Status</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Payment Method</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Total Amount</th>
                   <th style={{ width: 240, padding: "12px 6px" }}>Customer</th>
                   <th style={{ width: 140, padding: "12px 6px" }}> </th>
                 </tr>
@@ -299,7 +299,7 @@ export default function OrdersScreen() {
                         {moment(order.createdAt).format("ll")}
                       </Typography>
                     </td>
-                    <td>
+                    {/* <td>
                       <Chip
                         variant="soft"
                         size="sm"
@@ -320,6 +320,12 @@ export default function OrdersScreen() {
                       >
                         {order.orderStatus}
                       </Chip>
+                    </td> */}
+                    <td>
+                    {order.paymentMethod}
+                    </td>
+                    <td>
+                    Ksh.{" "}{order.total}.00
                     </td>
                     <td>
                       <Box
@@ -334,15 +340,15 @@ export default function OrdersScreen() {
                             "rgb(174, 185, 233)",
                           ])}
                           round={true}
-                          name={`${order.shippingAddress.fname} ${order.shippingAddress.sname}`}
+                          // name={`${order.customer} ${order.shippingAddress.sname}`}
+                          name={order.customer}
                         />
                         <div>
                           <Typography level="body-xs">
-                            {order.shippingAddress.fname}{" "}
-                            {order.shippingAddress.sname}
+                          {order.customer}
                           </Typography>
                           <Typography level="body-xs">
-                            {order.shippingAddress.email}
+                          Customer@gmail.com
                           </Typography>
                         </div>
                       </Box>

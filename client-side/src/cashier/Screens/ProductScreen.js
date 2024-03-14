@@ -39,16 +39,16 @@ export default function ProductScreen() {
   //get all products
   const fetchProducts = async () => {
     try {
-      const fetched = await fetch(`${base_url}product/products`);
+      const fetched = await fetch(`${base_url}recipe/cookedFood`);
       const jsonData = await fetched.json();
-      const uniqueBatch = [
-        ...new Set(jsonData.map((product) => product.batch)),
-      ];
-      const uniqueCate = [
-        ...new Set(jsonData.map((product) => product.category)),
-      ];
-      setSection(uniqueBatch);
-      setCategory(uniqueCate);
+      // const uniqueBatch = [
+      //   ...new Set(jsonData.map((product) => product.batch)),
+      // ];
+      // const uniqueCate = [
+      //   ...new Set(jsonData.map((product) => product.category)),
+      // ];
+      // setSection(uniqueBatch);
+      // setCategory(uniqueCate);
       setProducts(jsonData);
       setFilteredProducts(jsonData);
     } catch (err) {
@@ -73,7 +73,10 @@ export default function ProductScreen() {
         //   .join('')
         //   .toLowerCase()
         //   .includes(search.toLowerCase());
-        return product.title.join('').toLowerCase().includes(search.toLowerCase());
+        return product.title
+          .join("")
+          .toLowerCase()
+          .includes(search.toLowerCase());
       });
       setSearchResult(newList);
     } else {
@@ -133,30 +136,32 @@ export default function ProductScreen() {
   //   })
   // }
   // const uniqueBatch = [...new Set(products.map((product) => product.brand))];
-  const batchOptions = section.map((batch) => ({ value: batch, label: batch }));
-  const categoryOptions = category.map((cate) => ({
-    value: cate,
-    label: cate,
-  }));
+  // const batchOptions = section.map((batch) => ({ value: batch, label: batch }));
+  // const categoryOptions = category.map((cate) => ({
+  //   value: cate,
+  //   label: cate,
+  // }));
   // filter
   const renderFilters = () => (
     <React.Fragment>
       <FormControl size="sm" style={{ zIndex: 100 }}>
         <FormLabel>Batch</FormLabel>
         <Select
+          disabled="true"
           size="sm"
           placeholder="Filter by brand"
           onChange={(e) => filterBatch(e.value)}
-          options={[{ value: "All", label: "All" }, ...batchOptions]}
+          // options={[{ value: "All", label: "All" }, ...batchOptions]}
         />
       </FormControl>
       <FormControl size="sm" style={{ zIndex: 100 }}>
         <FormLabel>Category</FormLabel>
         <Select
+          disabled="true"
           size="sm"
           placeholder="Filter by category"
           onChange={(e) => filterCate(e.value)}
-          options={[{ value: "All", label: "All" }, ...categoryOptions]}
+          // options={[{ value: "All", label: "All" }, ...categoryOptions]}
         />
       </FormControl>
     </React.Fragment>
@@ -199,7 +204,7 @@ export default function ProductScreen() {
                 <Sheet
                   sx={{ display: "flex", flexDirection: "column", gap: 2 }}
                 >
-                  {renderFilters()}
+                  {/* {renderFilters()} */}
                   <Button color="primary" onClick={() => setOpen(false)}>
                     Submit
                   </Button>
@@ -276,7 +281,7 @@ export default function ProductScreen() {
                 onChange={(e) => searchHandler(e.target.value)}
               />
             </FormControl>
-            {renderFilters()}
+            {/* {renderFilters()} */}
           </Box>
           <Sheet
             className="OrderTableContainer"
@@ -306,10 +311,9 @@ export default function ProductScreen() {
             >
               <thead>
                 <tr>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Title</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Batch</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>InStock</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Cost</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Food Name</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Price</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Quantity</th>
                   <th style={{ width: 240, padding: "12px 6px" }}>Product</th>
                 </tr>
               </thead>
@@ -317,10 +321,9 @@ export default function ProductScreen() {
                 {search.length > 1
                   ? searchResult.map((product) => (
                       <tr key={product.id}>
-                        <td>{product.title}</td>
-                        <td>{product.batch}</td>
-                        <td>{product.inStock}</td>
-                        <td>Ksh. {product.cost}</td>
+                        <td>{product.foodName}</td>
+                        <td>Ksh. {product.price}.00</td>
+                        <td>{product.quantity}</td>
                         <td>
                           <Box
                             sx={{
@@ -340,15 +343,15 @@ export default function ProductScreen() {
                                 ])}
                                 // round={true}
                                 src={product.image}
-                                alt={product.title}
+                                alt={product.foodName}
                               />
                             </Typography>
                             <div>
                               <Typography level="body-xs">
-                                {product.title}
+                                {product.foodName}
                               </Typography>
-                              <Typography level="body-xs">
-                                {product.category}
+                              <Typography level="body-xs" sx={{color:'green'}}>
+                                Available
                               </Typography>
                             </div>
                           </Box>
@@ -357,44 +360,42 @@ export default function ProductScreen() {
                     ))
                   : products.map((product) => (
                       <tr key={product.id}>
-                        <td>{product.title}</td>
-                        <td>{product.batch}</td>
-                        <td>{product.inStock}</td>
-                        <td>Ksh. {product.cost}</td>
-                        <td>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              gap: 2,
-                              alignItems: "center",
-                            }}
-                          >
+                      <td>{product.foodName}</td>
+                      <td>Ksh. {product.price}.00</td>
+                      <td>{product.quantity}</td>
+                      <td>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            gap: 2,
+                            alignItems: "center",
+                          }}
+                        >
+                          <Typography level="body-xs">
+                            <Avatar
+                              size="40"
+                              color={Avatar.getRandomColor("sitebase", [
+                                "rgb(233, 150, 150)",
+                                "rgb(164, 231, 164)",
+                                "rgb(236, 224, 167)",
+                                "rgb(174, 185, 233)",
+                              ])}
+                              // round={true}
+                              src={product.image}
+                              alt={product.foodName}
+                            />
+                          </Typography>
+                          <div>
                             <Typography level="body-xs">
-                              <Avatar
-                                size="40"
-                                color={Avatar.getRandomColor("sitebase", [
-                                  "rgb(233, 150, 150)",
-                                  "rgb(164, 231, 164)",
-                                  "rgb(236, 224, 167)",
-                                  "rgb(174, 185, 233)",
-                                ])}
-                                // round={true}
-                                src={product.image}
-                                alt={product.title}
-                              />
+                              {product.foodName}
                             </Typography>
-                            <div>
-                              <Typography level="body-xs">
-                                {product.title}
-                              </Typography>
-                              <Typography level="body-xs">
-                                {product.category}
-                              </Typography>
-                            </div>
-                          </Box>
-                        </td>
-                        
-                      </tr>
+                            <Typography level="body-xs" sx={{color:'green'}}>
+                              Available
+                            </Typography>
+                          </div>
+                        </Box>
+                      </td>
+                    </tr>
                     ))}
               </tbody>
             </Table>
@@ -403,7 +404,7 @@ export default function ProductScreen() {
             className="Pagination-laptopUp"
             sx={{
               pt: 2,
-              mb:5,
+              mb: 5,
               gap: 1,
               [`& .${iconButtonClasses.root}`]: { borderRadius: "50%" },
               display: {

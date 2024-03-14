@@ -184,7 +184,7 @@ export default function SideBar() {
                 </ListItemContent>
               </ListItemButton>
             </ListItem>
-            <ListItemButton role="menuitem" component="a" href="/transaction">
+            <ListItemButton role="menuitem" component="a" href="">
               <PaidIcon />
               <ListItemContent>
                 <Typography level="title-sm">Transaction</Typography>
