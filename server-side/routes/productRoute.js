@@ -4,6 +4,7 @@ const { Products } = require("../models");
 const multerUpload = require("../middleware/multer");
 const cloudinary = require("../config/cloudinary");
 const { Supplier } = require("../models");
+const { Op } = require("sequelize");
 
 //create a new product
 productRouter.post(
@@ -87,6 +88,23 @@ productRouter.get("/products", async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//get notification if the product quantity less 10
+productRouter.get('/product/low-quantity', async (req, res) => {
+  try {
+    const lowQuantityProducts = await Products.findAll({
+      where: {
+        inStock: {
+          [Op.lt]: 7500 // Example threshold for low quantity
+        }
+      }
+    });
+    res.json(lowQuantityProducts);
+  } catch (error) {
+    console.error('Error fetching low quantity products:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

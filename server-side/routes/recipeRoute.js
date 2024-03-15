@@ -4,18 +4,6 @@ const { Recipe, Products, Ingredients, CookedFood } = require("../models");
 const { Op } = require("sequelize");
 const multerUpload = require("../middleware/multer");
 const cloudinary = require("../config/cloudinary");
-// const generateRecipeCode = () => {
-//   const characters = "0123456789";
-//   let recipeCode = "";
-
-//   // Generate seven random alphanumeric characters
-//   for (let i = 0; i < 5; i++) {
-//     recipeCode += characters[Math.floor(Math.random() * characters.length)];
-//   }
-//   recipeCode += Date.now().toString().slice(-5);
-
-//   return `R-${recipeCode}`;
-// };
 
 //-----------------------------RECIPE ROUTE-----------------------
 
@@ -334,6 +322,22 @@ recipeRouter.get('/cookedFood', async (req, res) => {
   } catch (error) {
     console.error('Error fetching cooked food:', error);
     res.status(500).json({ message: 'Internal server error' });
+  }
+});
+//get notification if the product quantity less 10
+recipeRouter.get('/cookedfood/low-quantity', async (req, res) => {
+  try {
+    const lowQuantityProducts = await CookedFood.findAll({
+      where: {
+        quantity: {
+          [Op.lt]: 200 // Example threshold for low quantity
+        }
+      }
+    });
+    res.json(lowQuantityProducts);
+  } catch (error) {
+    console.error('Error fetching low quantity products:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 //get a cooked food
