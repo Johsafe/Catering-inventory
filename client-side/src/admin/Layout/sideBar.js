@@ -26,6 +26,9 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import ArticleIcon from '@mui/icons-material/Article';
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
+import { base_url, getError } from "../Utils/Utils";
+import { toast } from "react-toastify";
+
 
 export default function SideBar() {
   const navigate = useNavigate();
@@ -40,6 +43,25 @@ export default function SideBar() {
       document.body.style.removeProperty("overflow");
     }
   }
+//low quanityt product
+  const [lowQuantityProducts, setLowQuantityProducts] = React.useState([]);
+
+  React.useEffect(() => {
+    const fetchLowQuantity = async () => {
+      try {
+        const fetched = await fetch(
+          `${base_url}recipe/cookedfood/low-quantity`
+        );
+        const jsonData = await fetched.json();
+        setLowQuantityProducts(jsonData);
+      } catch (err) {
+        toast.error(getError(err));
+      }
+    };
+    fetchLowQuantity();
+  }, []);
+
+  const notificationCount = lowQuantityProducts.length;
   return (
     <div>
       <Helmet>
@@ -143,19 +165,27 @@ export default function SideBar() {
                 </ListItemContent>
               </ListItemButton>
             </ListItem>
-            <ListItem>
+            {/* <ListItem>
               <ListItemButton role="menuitem" component="a" href="/barcode">
                 <LocalMallIcon />
                 <ListItemContent>
                   <Typography level="title-sm">BarCode Scanner</Typography>
                 </ListItemContent>
               </ListItemButton>
-            </ListItem>
+            </ListItem> */}
             <ListItem>
               <ListItemButton role="menuitem" component="a" href="/supplier">
                 <GroupsIcon/>
                 <ListItemContent>
                   <Typography level="title-sm">Suppliers</Typography>
+                </ListItemContent>
+              </ListItemButton>
+            </ListItem>
+            <ListItem>
+              <ListItemButton role="menuitem" component="a" href="/foods">
+                <GroupsIcon/>
+                <ListItemContent>
+                  <Typography level="title-sm">Foods</Typography>
                 </ListItemContent>
               </ListItemButton>
             </ListItem>
@@ -168,14 +198,14 @@ export default function SideBar() {
               </ListItemButton>
             </ListItem>
             
-            <ListItem>
+            {/* <ListItem>
               <ListItemButton role="menuitem" component="a" href="/purchaseorder">
                 <ShoppingCartRoundedIcon />
                 <ListItemContent>
                   <Typography level="title-sm">Purchase Orders</Typography>
                 </ListItemContent>
               </ListItemButton>
-            </ListItem>
+            </ListItem> */}
             <ListItem>
               <ListItemButton role="menuitem" component="a" href="/orders">
                 <ShoppingCartRoundedIcon />
@@ -184,20 +214,20 @@ export default function SideBar() {
                 </ListItemContent>
               </ListItemButton>
             </ListItem>
-            <ListItemButton role="menuitem" component="a" href="">
+            {/* <ListItemButton role="menuitem" component="a" href="">
               <PaidIcon />
               <ListItemContent>
                 <Typography level="title-sm">Transaction</Typography>
               </ListItemContent>
-            </ListItemButton>
+            </ListItemButton> */}
             <ListItem>
-              <ListItemButton role="menuitem" component="a" href="#">
+              <ListItemButton role="menuitem" component="a" href="/notification">
                 <QuestionAnswerRoundedIcon />
                 <ListItemContent>
                   <Typography level="title-sm">Notifications</Typography>
                 </ListItemContent>
                 <Chip size="sm" color="primary" variant="solid">
-                  4
+                  {notificationCount}
                 </Chip>
               </ListItemButton>
             </ListItem>

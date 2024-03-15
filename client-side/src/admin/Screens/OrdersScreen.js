@@ -283,7 +283,8 @@ export default function OrdersScreen() {
                 <tr>
                   <th style={{ width: 120, padding: "12px 6px" }}>Invoice</th>
                   <th style={{ width: 140, padding: "12px 6px" }}>Date</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Status</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Payment Method</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Total Amount</th>
                   <th style={{ width: 240, padding: "12px 6px" }}>Customer</th>
                   <th style={{ width: 140, padding: "12px 6px" }}> </th>
                 </tr>
@@ -300,26 +301,10 @@ export default function OrdersScreen() {
                       </Typography>
                     </td>
                     <td>
-                      <Chip
-                        variant="soft"
-                        size="sm"
-                        startDecorator={
-                          {
-                            Completed: <CheckRoundedIcon />,
-                            Pending: <AutorenewRoundedIcon />,
-                            // Cancelled: <BlockIcon />,
-                          }[order.orderStatus]
-                        }
-                        color={
-                          {
-                            Completed: "success",
-                            Pending: "neutral",
-                            // Cancelled: "danger",
-                          }[order.orderStatus]
-                        }
-                      >
-                        {order.orderStatus}
-                      </Chip>
+                    {order.paymentMethod}
+                    </td>
+                    <td>
+                    Ksh.{" "}{order.total}.00
                     </td>
                     <td>
                       <Box
@@ -334,15 +319,15 @@ export default function OrdersScreen() {
                             "rgb(174, 185, 233)",
                           ])}
                           round={true}
-                          name={`${order.shippingAddress.fname} ${order.shippingAddress.sname}`}
+                          // name={`${order.customer} ${order.shippingAddress.sname}`}
+                          name={order.customer}
                         />
                         <div>
                           <Typography level="body-xs">
-                            {order.shippingAddress.fname}{" "}
-                            {order.shippingAddress.sname}
+                          {order.customer}
                           </Typography>
                           <Typography level="body-xs">
-                            {order.shippingAddress.email}
+                          Customer@gmail.com
                           </Typography>
                         </div>
                       </Box>

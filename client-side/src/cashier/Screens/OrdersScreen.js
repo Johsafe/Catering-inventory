@@ -299,28 +299,6 @@ export default function OrdersScreen() {
                         {moment(order.createdAt).format("ll")}
                       </Typography>
                     </td>
-                    {/* <td>
-                      <Chip
-                        variant="soft"
-                        size="sm"
-                        startDecorator={
-                          {
-                            Completed: <CheckRoundedIcon />,
-                            Pending: <AutorenewRoundedIcon />,
-                            // Cancelled: <BlockIcon />,
-                          }[order.orderStatus]
-                        }
-                        color={
-                          {
-                            Completed: "success",
-                            Pending: "neutral",
-                            // Cancelled: "danger",
-                          }[order.orderStatus]
-                        }
-                      >
-                        {order.orderStatus}
-                      </Chip>
-                    </td> */}
                     <td>
                     {order.paymentMethod}
                     </td>

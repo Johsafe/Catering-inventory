@@ -25,6 +25,7 @@ import AddSupplier from "../Screens/AddSupplier";
 import EditSupplier from "../Screens/EditSupplier";
 import AddRecipe from "../Screens/AddRecipe";
 import ViewRecipe from "../Screens/ViewRecipe";
+import Notifications from "../Screens/NotificationScreen";
 
 function AdminRouter() {
   let token = localStorage.getItem("token") ? true : false;
@@ -97,6 +98,16 @@ function AdminRouter() {
           <Route
             path="/out-of-stock"
             element={token ? <OutOfStock /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/notification"
+            element={token ? <Notifications/> : <Navigate to="/login" />}
+          />
+          <Route
+            path="*"
+            element={<div>
+              Page Not Found
+            </div>}
           />
         </Routes>
       </Router>
