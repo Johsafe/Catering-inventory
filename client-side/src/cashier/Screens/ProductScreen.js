@@ -25,11 +25,11 @@ import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
 // import DeleteProductModel from "./DeleteProductModel";
 import { Container } from "@mui/material";
-import { base_url, getError } from "../Utils/Utils";
+import { base_url, getError } from "../../Utils/Utils";
 import { toast } from "react-toastify";
-import SideBar from "../Layout/sideBar";
+import SideBar from "../../Utils/CashierSideBar";
 
-export default function ProductScreen() {
+export default function CashierProductScreen() {
   const [open, setOpen] = React.useState(false);
 
   const [products, setProducts] = React.useState([]);
@@ -350,7 +350,10 @@ export default function ProductScreen() {
                               <Typography level="body-xs">
                                 {product.foodName}
                               </Typography>
-                              <Typography level="body-xs" sx={{color:'green'}}>
+                              <Typography
+                                level="body-xs"
+                                sx={{ color: "green" }}
+                              >
                                 Available
                               </Typography>
                             </div>
@@ -360,42 +363,45 @@ export default function ProductScreen() {
                     ))
                   : products.map((product) => (
                       <tr key={product.id}>
-                      <td>{product.foodName}</td>
-                      <td>Ksh. {product.price}.00</td>
-                      <td>{product.quantity}</td>
-                      <td>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            gap: 2,
-                            alignItems: "center",
-                          }}
-                        >
-                          <Typography level="body-xs">
-                            <Avatar
-                              size="40"
-                              color={Avatar.getRandomColor("sitebase", [
-                                "rgb(233, 150, 150)",
-                                "rgb(164, 231, 164)",
-                                "rgb(236, 224, 167)",
-                                "rgb(174, 185, 233)",
-                              ])}
-                              // round={true}
-                              src={product.image}
-                              alt={product.foodName}
-                            />
-                          </Typography>
-                          <div>
+                        <td>{product.foodName}</td>
+                        <td>Ksh. {product.price}.00</td>
+                        <td>{product.quantity}</td>
+                        <td>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              gap: 2,
+                              alignItems: "center",
+                            }}
+                          >
                             <Typography level="body-xs">
-                              {product.foodName}
+                              <Avatar
+                                size="40"
+                                color={Avatar.getRandomColor("sitebase", [
+                                  "rgb(233, 150, 150)",
+                                  "rgb(164, 231, 164)",
+                                  "rgb(236, 224, 167)",
+                                  "rgb(174, 185, 233)",
+                                ])}
+                                // round={true}
+                                src={product.image}
+                                alt={product.foodName}
+                              />
                             </Typography>
-                            <Typography level="body-xs" sx={{color:'green'}}>
-                              Available
-                            </Typography>
-                          </div>
-                        </Box>
-                      </td>
-                    </tr>
+                            <div>
+                              <Typography level="body-xs">
+                                {product.foodName}
+                              </Typography>
+                              <Typography
+                                level="body-xs"
+                                sx={{ color: "green" }}
+                              >
+                                Available
+                              </Typography>
+                            </div>
+                          </Box>
+                        </td>
+                      </tr>
                     ))}
               </tbody>
             </Table>

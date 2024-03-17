@@ -8,7 +8,7 @@ import { Card, Divider } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { Grid, Paper } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { base_url, getError } from "../Utils/Utils";
+import { base_url, getError } from "../../Utils/Utils";
 import catering from "../images/catering1.png";
 import Avatar from "react-avatar";
 

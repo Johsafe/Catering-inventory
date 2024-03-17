@@ -14,8 +14,8 @@ import { useNavigate } from "react-router-dom";
 import { Container } from "@mui/material";
 import { toast } from "react-toastify";
 import Select from "react-select";
-import { base_url, getError } from "../Utils/Utils";
-import SideBar from "../Layout/sideBar";
+import { base_url, getError } from "../../Utils/Utils";
+import SideBar from "../../Utils/CashierSideBar";
 import Avatar from "react-avatar";
 import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
@@ -23,7 +23,7 @@ import Button from "@mui/joy/Button";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-export default function SalesScreen() {
+export default function CashierSalesScreen() {
   //post data
   const navigate = useNavigate();
   const [customer, setCustomer] = React.useState("");
@@ -133,7 +133,7 @@ export default function SalesScreen() {
   const options = [
     { value: "Cash", label: "Cash" },
     // { value: "Cheque", label: "Cheque" },
-    { value: "Transaction", label: "Transaction" },
+    { value: "Mpesa", label: "Mpesa" },
   ];
 
   return (
@@ -256,7 +256,6 @@ export default function SalesScreen() {
                         />
                       </FormControl>
                     </div>
-
                   </Stack>
 
                   {/* </Stack> */}
@@ -321,13 +320,32 @@ export default function SalesScreen() {
                           <tr key={index}>
                             <td>{veg.label}</td>
                             <td>Ksh. {veg.price}</td>
-                            <td>
+                            {/* <td>
                               <Input
                                 type="number"
                                 value={veg.quantity}
                                 onChange={(e) =>
-                                  handleQuantityChange(index, e.target.value)
+                                  handleQuantityChange(index, e.target.value.replace(/[^0-9]/g, ''))
                                 }
+                                // onChange={handleInputChange}
+                                defaultValue="1"
+                              />
+                            </td> */}
+                            <td>
+                              <Input
+                                type="number"
+                                value={veg.quantity}
+                                onChange={(e) => {
+                                  const inputValue = e.target.value.replace(
+                                    /[^0-9]/g,
+                                    ""
+                                  ); // Remove non-numeric characters
+                                  const numericValue = parseInt(inputValue, 10); // Convert string to number
+                                  if (numericValue >= 0) {
+                                    // Only update quantity if it's a non-negative number
+                                    handleQuantityChange(index, numericValue);
+                                  }
+                                }}
                                 defaultValue="1"
                               />
                             </td>

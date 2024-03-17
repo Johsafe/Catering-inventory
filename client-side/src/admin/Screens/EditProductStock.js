@@ -10,7 +10,7 @@ import DialogContent from "@mui/joy/DialogContent";
 import Stack from "@mui/joy/Stack";
 import EditIcon from "@mui/icons-material/Edit";
 import { toast } from "react-toastify";
-import { base_url, getError } from "../Utils/Utils";
+import { base_url, getError } from "../../Utils/Utils";
 
 export default function EditStockModal({ product }) {
   const [open, setOpen] = React.useState(false);
@@ -51,7 +51,7 @@ export default function EditStockModal({ product }) {
         }
       );
       await updatestock.json();
-      window.location = "/product";
+      window.location = "/admin-dashboard/product";
       toast.success("product stock update successfully");
     } catch (err) {
       toast.error(getError(err));

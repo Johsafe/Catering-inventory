@@ -16,14 +16,14 @@ export default function DeleteProductModel({ product }) {
   //delete product
   async function deleteProduct(id) {
     try {
-      const del = await fetch(`${base_url}product/product/${id}`, {
+      const del = await fetch(`${base_url}recipe/cookedFood/${id}`, {
         method: "DELETE",
         // headers: {
         //   authorization: `Bearer ${Token.token}`,
         // },
       });
-      console.log(del);
-      // window.location = "/admin-dashboard/product";
+    //   console.log(del);
+      window.location = "/admin-dashboard/foods";
       toast.success("product deleted successfully");
     } catch (err) {
         toast.error(getError(err));
@@ -58,7 +58,7 @@ export default function DeleteProductModel({ product }) {
           >
             Are you sure you want to Permanantly Delete
             {" "}
-            {product.title} ?
+            {product.foodName} ?
           </Typography>
           <Box
             sx={{ display: "flex", gap: 1, justifyContent: "flex-end", pt: 2 }}

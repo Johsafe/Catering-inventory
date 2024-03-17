@@ -35,7 +35,7 @@ import { Breadcrumbs } from "@mui/joy";
 import BlockIcon from "@mui/icons-material/Block";
 import Avatar from "react-avatar";
 import { Container } from "@mui/material";
-import SideBar from "../Layout/sideBar";
+import SideBar from "../../Utils/CashierSideBar";
 
 const rows = [
   {
@@ -44,7 +44,8 @@ const rows = [
     tranx: "QERTYU",
     status: "Paid",
     amount: 559.0,
-    avatar:"https://material-kit-react.devias.io/assets/avatars/avatar-miron-vitold.png",
+    avatar:
+      "https://material-kit-react.devias.io/assets/avatars/avatar-miron-vitold.png",
     customer: {
       initial: "S",
       name: "Sachin Flynn",
@@ -57,7 +58,8 @@ const rows = [
     tranx: "QEFGHN",
     status: "Cancelled",
     amount: 989.0,
-    avatar:"https://material-kit-react.devias.io/assets/avatars/avatar-iulia-albu.png",
+    avatar:
+      "https://material-kit-react.devias.io/assets/avatars/avatar-iulia-albu.png",
     customer: {
       initial: "B",
       name: "Bradley Rosales",
@@ -70,7 +72,8 @@ const rows = [
     tranx: "QYUIOP",
     status: "Refunded",
     amount: 67999.0,
-    avatar:"https://material-kit-react.devias.io/assets/avatars/avatar-nasimiyu-danai.png",
+    avatar:
+      "https://material-kit-react.devias.io/assets/avatars/avatar-nasimiyu-danai.png",
     customer: {
       initial: "M",
       name: "Maria Macdonald",
@@ -83,7 +86,8 @@ const rows = [
     tranx: "QRTYUI",
     status: "Paid",
     amount: 30059.0,
-    avatar:"https://material-kit-react.devias.io/assets/avatars/avatar-jie-yan-song.png",
+    avatar:
+      "https://material-kit-react.devias.io/assets/avatars/avatar-jie-yan-song.png",
     customer: {
       initial: "C",
       name: "Charles Fulton",
@@ -96,7 +100,8 @@ const rows = [
     tranx: "QERTYU",
     status: "Cancelled",
     amount: 989659.0,
-    avatar:"https://material-kit-react.devias.io/assets/avatars/avatar-omar-darboe.png",
+    avatar:
+      "https://material-kit-react.devias.io/assets/avatars/avatar-omar-darboe.png",
     customer: {
       initial: "J",
       name: "Jay Hooper",
@@ -109,7 +114,8 @@ const rows = [
     tranx: "QWERTY",
     status: "Refunded",
     amount: 679659.0,
-    avatar:"https://material-kit-react.devias.io/assets/avatars/avatar-anika-visser.png",
+    avatar:
+      "https://material-kit-react.devias.io/assets/avatars/avatar-anika-visser.png",
     customer: {
       initial: "A",
       name: "Anika Rosales",
@@ -137,7 +143,7 @@ function RowMenu() {
   );
 }
 
-export default function TransactionScreen() {
+export default function CashierTransactionScreen() {
   const [open, setOpen] = React.useState(false);
   const renderFilters = () => (
     <React.Fragment>
@@ -166,7 +172,7 @@ export default function TransactionScreen() {
     </React.Fragment>
   );
   return (
-    <div style={{ display: "flex" }}>      
+    <div style={{ display: "flex" }}>
       <SideBar />
       <Container>
         <React.Fragment>
@@ -318,7 +324,9 @@ export default function TransactionScreen() {
                   <th style={{ width: 140, padding: "12px 6px" }}>Date</th>
                   <th style={{ width: 140, padding: "12px 6px" }}>Order Id</th>
                   <th style={{ width: 140, padding: "12px 6px" }}>Amount</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Payment Method</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>
+                    Payment Method
+                  </th>
                   <th style={{ width: 240, padding: "12px 6px" }}>Customer</th>
                   <th style={{ width: 140, padding: "12px 6px" }}> </th>
                 </tr>

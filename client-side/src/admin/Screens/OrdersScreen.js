@@ -35,9 +35,9 @@ import moment from "moment";
 import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
 import { Container } from "@mui/material";
-import { base_url, getError } from "../Utils/Utils";
+import { base_url, getError } from "../../Utils/Utils";
 import { toast } from "react-toastify";
-import SideBar from "../Layout/sideBar";
+import SideBar from "../../Utils/AdminSideBar";
 
 function RowMenu({ order }) {
   return (
@@ -51,7 +51,7 @@ function RowMenu({ order }) {
       <Menu size="sm" sx={{ minWidth: 140 }}>
         <MenuItem>Edit</MenuItem>
         <MenuItem>
-          <Link to={`/${order.id}/orders/mark`}>View</Link>
+          <Link to={`/admin-dashboard/${order.id}/orders/mark`}>View</Link>
         </MenuItem>
         <Divider />
         <MenuItem color="danger">Delete</MenuItem>
@@ -82,32 +82,29 @@ export default function OrdersScreen() {
         setOrders(jsonData);
         setStatus(uniqueStatus);
         setPaid(uniquePay);
-        setFilteredOrders(jsonData)
-
+        setFilteredOrders(jsonData);
       } catch (err) {
         toast.error(getError(err));
       }
     };
     fetchOrder();
   }, []);
-    // filter by Status
-    function filterStatus(value) {
-      if (value === "All") {
-        setOrders(filteredOrders);
-        return;
-      }
-  
-      const statusFilteredOrders = filteredOrders.filter(
-        (status) => status.orderStatus === value
-      );
-      setOrders(statusFilteredOrders);
+  // filter by Status
+  function filterStatus(value) {
+    if (value === "All") {
+      setOrders(filteredOrders);
+      return;
     }
-    const statusOptions = status.map((s) => ({
-      value: s,
-      label:s,
-    }));
-  
 
+    const statusFilteredOrders = filteredOrders.filter(
+      (status) => status.orderStatus === value
+    );
+    setOrders(statusFilteredOrders);
+  }
+  const statusOptions = status.map((s) => ({
+    value: s,
+    label: s,
+  }));
 
   // filter
   const renderFilters = () => (
@@ -118,7 +115,7 @@ export default function OrdersScreen() {
           size="sm"
           placeholder="Filter by brand"
           onChange={(e) => filterStatus(e.value)}
-          options={[{ value: "All", label: "All" }, ...statusOptions ]}
+          options={[{ value: "All", label: "All" }, ...statusOptions]}
         />
       </FormControl>
       <FormControl size="sm">
@@ -283,8 +280,12 @@ export default function OrdersScreen() {
                 <tr>
                   <th style={{ width: 120, padding: "12px 6px" }}>Invoice</th>
                   <th style={{ width: 140, padding: "12px 6px" }}>Date</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Payment Method</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Total Amount</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>
+                    Payment Method
+                  </th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>
+                    Total Amount
+                  </th>
                   <th style={{ width: 240, padding: "12px 6px" }}>Customer</th>
                   <th style={{ width: 140, padding: "12px 6px" }}> </th>
                 </tr>
@@ -300,12 +301,8 @@ export default function OrdersScreen() {
                         {moment(order.createdAt).format("ll")}
                       </Typography>
                     </td>
-                    <td>
-                    {order.paymentMethod}
-                    </td>
-                    <td>
-                    Ksh.{" "}{order.total}.00
-                    </td>
+                    <td>{order.paymentMethod}</td>
+                    <td>Ksh. {order.total}.00</td>
                     <td>
                       <Box
                         sx={{ display: "flex", gap: 2, alignItems: "center" }}
@@ -324,10 +321,10 @@ export default function OrdersScreen() {
                         />
                         <div>
                           <Typography level="body-xs">
-                          {order.customer}
+                            {order.customer}
                           </Typography>
                           <Typography level="body-xs">
-                          Customer@gmail.com
+                            Customer@gmail.com
                           </Typography>
                         </div>
                       </Box>

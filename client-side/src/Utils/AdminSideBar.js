@@ -2,6 +2,7 @@ import * as React from "react";
 import GlobalStyles from "@mui/joy/GlobalStyles";
 import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
+import Chip from "@mui/joy/Chip";
 import Divider from "@mui/joy/Divider";
 import IconButton from "@mui/joy/IconButton";
 import List from "@mui/joy/List";
@@ -13,19 +14,32 @@ import Sheet from "@mui/joy/Sheet";
 import PaidIcon from "@mui/icons-material/Paid";
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
+import QuestionAnswerRoundedIcon from "@mui/icons-material/QuestionAnswerRounded";
 import GroupRoundedIcon from "@mui/icons-material/GroupRounded";
+import SupportRoundedIcon from "@mui/icons-material/SupportRounded";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import BrightnessAutoRoundedIcon from "@mui/icons-material/BrightnessAutoRounded";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
+import BlockIcon from '@mui/icons-material/Block';
+import GroupsIcon from '@mui/icons-material/Groups';
+import ArticleIcon from '@mui/icons-material/Article';
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
+import { base_url, getError } from "../Utils/Utils";
+import { toast } from "react-toastify";
 
-export default function SideBar() {
+
+export default function AsminSideBar() {
   const navigate = useNavigate();
   function logOut() {
     localStorage.clear();
-    navigate("/login");
+    navigate("/");
   }
+
+  
+  let username = localStorage.getItem("username");
+  let email = localStorage.getItem("email")
 
   function closeSidebar() {
     if (typeof window !== "undefined") {
@@ -33,6 +47,25 @@ export default function SideBar() {
       document.body.style.removeProperty("overflow");
     }
   }
+//low quanityt product
+  const [lowQuantityProducts, setLowQuantityProducts] = React.useState([]);
+
+  React.useEffect(() => {
+    const fetchLowQuantity = async () => {
+      try {
+        const fetched = await fetch(
+          `${base_url}recipe/cookedfood/low-quantity`
+        );
+        const jsonData = await fetched.json();
+        setLowQuantityProducts(jsonData);
+      } catch (err) {
+        toast.error(getError(err));
+      }
+    };
+    fetchLowQuantity();
+  }, []);
+
+  const notificationCount = lowQuantityProducts.length;
   return (
     <div>
       <Helmet>
@@ -120,7 +153,7 @@ export default function SideBar() {
                 selected
                 role="menuitem"
                 component="a"
-                href="/cashier/dashboard"
+                href="/"
               >
                 <DashboardRoundedIcon />
                 <ListItemContent>
@@ -129,43 +162,118 @@ export default function SideBar() {
               </ListItemButton>
             </ListItem>
             <ListItem>
-              <ListItemButton role="menuitem" component="a" href="/cashier/product">
+              <ListItemButton role="menuitem" component="a" href="/admin-dashboard/product">
                 <LocalMallIcon />
+                <ListItemContent>
+                  <Typography level="title-sm">Products</Typography>
+                </ListItemContent>
+              </ListItemButton>
+            </ListItem>
+            {/* <ListItem>
+              <ListItemButton role="menuitem" component="a" href="/barcode">
+                <LocalMallIcon />
+                <ListItemContent>
+                  <Typography level="title-sm">BarCode Scanner</Typography>
+                </ListItemContent>
+              </ListItemButton>
+            </ListItem> */}
+            <ListItem>
+              <ListItemButton role="menuitem" component="a" href="/admin-dashboard/supplier">
+                <GroupsIcon/>
+                <ListItemContent>
+                  <Typography level="title-sm">Suppliers</Typography>
+                </ListItemContent>
+              </ListItemButton>
+            </ListItem>
+            <ListItem>
+              <ListItemButton role="menuitem" component="a" href="/admin-dashboard/foods">
+                <GroupsIcon/>
                 <ListItemContent>
                   <Typography level="title-sm">Foods</Typography>
                 </ListItemContent>
               </ListItemButton>
             </ListItem>
-            
             <ListItem>
-              <ListItemButton role="menuitem" component="a" href="/cashier/sales">
-                <ShoppingCartRoundedIcon />
+              <ListItemButton role="menuitem" component="a" href="/admin-dashboard/recipe">
+                <ArticleIcon/>
                 <ListItemContent>
-                  <Typography level="title-sm">Sales</Typography>
+                  <Typography level="title-sm">Recipes</Typography>
                 </ListItemContent>
               </ListItemButton>
             </ListItem>
+            
+            {/* <ListItem>
+              <ListItemButton role="menuitem" component="a" href="/purchaseorder">
+                <ShoppingCartRoundedIcon />
+                <ListItemContent>
+                  <Typography level="title-sm">Purchase Orders</Typography>
+                </ListItemContent>
+              </ListItemButton>
+            </ListItem> */}
             <ListItem>
-              <ListItemButton role="menuitem" component="a" href="/cashier/orders">
+              <ListItemButton role="menuitem" component="a" href="/admin-dashboard/orders">
                 <ShoppingCartRoundedIcon />
                 <ListItemContent>
                   <Typography level="title-sm">Orders</Typography>
                 </ListItemContent>
               </ListItemButton>
             </ListItem>
-            
-            <ListItemButton role="menuitem" component="a" href="">{/* /cashier/transaction */}
+            {/* <ListItemButton role="menuitem" component="a" href="">
               <PaidIcon />
               <ListItemContent>
                 <Typography level="title-sm">Transaction</Typography>
               </ListItemContent>
-            </ListItemButton>
-            <ListItemButton role="menuitem" component="a" href="">{/* /cashier/report */}
+            </ListItemButton> */}
+            <ListItem>
+              <ListItemButton role="menuitem" component="a" href="/admin-dashboard/notification">
+                <QuestionAnswerRoundedIcon />
+                <ListItemContent>
+                  <Typography level="title-sm">Notifications</Typography>
+                </ListItemContent>
+                <Chip size="sm" color="primary" variant="solid">
+                  {notificationCount}
+                </Chip>
+              </ListItemButton>
+            </ListItem>
+            <ListItemButton role="menuitem" component="a" href="/admin-dashboard/users">
               <GroupRoundedIcon />
               <ListItemContent>
-                <Typography level="title-sm">Reports</Typography>
+                <Typography level="title-sm">Users</Typography>
               </ListItemContent>
             </ListItemButton>
+
+            <ListItem>
+              <ListItemButton role="menuitem" component="a" href="/admin-dashboard/expired">
+                <BlockIcon sx={{color:'red'}} />
+                <ListItemContent>
+                  <Typography level="title-sm" sx={{color:'red'}}>Expired</Typography>
+                </ListItemContent>
+              </ListItemButton>
+            </ListItem>
+          </List>
+
+          <List
+            size="sm"
+            sx={{
+              mt: "auto",
+              flexGrow: 0,
+              "--ListItem-radius": (theme) => theme.vars.radius.sm,
+              "--List-gap": "8px",
+              mb: 2,
+            }}
+          >
+            <ListItem>
+              <ListItemButton>
+                <SupportRoundedIcon />
+                Support
+              </ListItemButton>
+            </ListItem>
+            <ListItem>
+              <ListItemButton>
+                <SettingsRoundedIcon />
+                Settings
+              </ListItemButton>
+            </ListItem>
           </List>
         </Box>
         <Divider />
@@ -175,9 +283,9 @@ export default function SideBar() {
             size="sm"
             src="https://material-kit-react.devias.io/assets/avatars/avatar-miron-vitold.png"
           />
-          <Box sx={{ minWidth: 0, flex: 1 }}>
-            <Typography level="title-sm">cashier Panel</Typography>
-            <Typography level="body-xs">cashier@test.com</Typography>
+           <Box sx={{ minWidth: 0, flex: 1 }}>
+            <Typography level="title-sm">{username}</Typography>
+            <Typography level="body-xs">{email}</Typography>
           </Box>
           <IconButton
             size="sm"

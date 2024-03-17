@@ -16,7 +16,7 @@ import Typography from "@mui/joy/Typography";
 import Breadcrumbs from "@mui/joy/Breadcrumbs";
 import EditIcon from "@mui/icons-material/Edit";
 import ButtonGroup from "@mui/material/ButtonGroup";
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SearchIcon from "@mui/icons-material/Search";
@@ -28,9 +28,9 @@ import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
 import DeleteProductModel from "./DeleteProductModel";
 import { Container } from "@mui/material";
-import { base_url, getError } from "../Utils/Utils";
+import { base_url, getError } from "../../Utils/Utils";
 import { toast } from "react-toastify";
-import SideBar from "../Layout/sideBar";
+import SideBar from "../../Utils/AdminSideBar";
 
 export default function ProductScreen() {
   const [open, setOpen] = React.useState(false);
@@ -76,7 +76,10 @@ export default function ProductScreen() {
         //   .join('')
         //   .toLowerCase()
         //   .includes(search.toLowerCase());
-        return product.title.join('').toLowerCase().includes(search.toLowerCase());
+        return product.title
+          .join("")
+          .toLowerCase()
+          .includes(search.toLowerCase());
       });
       setSearchResult(newList);
     } else {
@@ -254,7 +257,7 @@ export default function ProductScreen() {
             <Typography level="h2" component="h1">
               Products
             </Typography>
-            <Link to="/add">
+            <Link to="/admin-dashboard/add">
               <Button
                 color="primary"
                 startDecorator={<AddCircleIcon />}
@@ -331,7 +334,7 @@ export default function ProductScreen() {
                   ? searchResult.map((product) => (
                       <tr key={product.id}>
                         <td>{product.title}</td>
-                        <td>{product.batch}</td>
+                        <td>{product.batch} Kg</td>
                         <td>{product.inStock}</td>
                         <td>Ksh. {product.cost}</td>
                         <td>
@@ -373,7 +376,7 @@ export default function ProductScreen() {
                               aria-label="text button group"
                               style={{ display: "flex", alignItems: "center" }}
                             >
-                              <Link to={`/${product.id}/edit`}>
+                              <Link to={`/admin-dashboard/${product.id}/edit`}>
                                 <EditIcon style={{ color: "blue" }} />
                               </Link>
                               <DeleteProductModel product={product} />
@@ -386,7 +389,7 @@ export default function ProductScreen() {
                       <tr key={product.id}>
                         <td>{product.title}</td>
                         <td>{product.batch}</td>
-                        <td>{product.inStock}</td>
+                        <td>{product.inStock} Kg</td>
                         <td>Ksh. {product.cost}</td>
                         <td>
                           <Box
@@ -427,7 +430,7 @@ export default function ProductScreen() {
                               aria-label="text button group"
                               style={{ display: "flex", alignItems: "center" }}
                             >
-                              <Link to={`/${product.id}/edit`}>
+                              <Link to={`/admin-dashboard/${product.id}/edit`}>
                                 <EditIcon style={{ color: "blue" }} />
                               </Link>
                               <DeleteProductModel product={product} />
@@ -443,7 +446,7 @@ export default function ProductScreen() {
             className="Pagination-laptopUp"
             sx={{
               pt: 2,
-              mb:5,
+              mb: 5,
               gap: 1,
               [`& .${iconButtonClasses.root}`]: { borderRadius: "50%" },
               display: {

@@ -11,17 +11,19 @@ import Typography from "@mui/joy/Typography";
 import Breadcrumbs from "@mui/joy/Breadcrumbs";
 import Link from "@mui/joy/Link";
 import Card from "@mui/joy/Card";
+
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import FileUploadRoundedIcon from "@mui/icons-material/FileUploadRounded";
-import { Form, useNavigate, useParams } from "react-router-dom";
+
+import { useNavigate, useParams } from "react-router-dom";
 import { Container } from "@mui/material";
-import { base_url, getError } from "../../Utils/Utils";
 import { toast } from "react-toastify";
+import { base_url, getError } from "../../Utils/Utils";
 import SideBar from "../../Utils/AdminSideBar";
 import Select from "react-select";
 
-export default function EditProductScreen() {
+export default function EditFoodScreen() {
   //image
   const handleLinkClick = () => {
     document.getElementById("image").click();
@@ -30,98 +32,89 @@ export default function EditProductScreen() {
   //post data
   const navigate = useNavigate();
   const params = useParams();
-  const [title, setTitle] = React.useState("");
-  const [batch, setBatch] = React.useState("");
-  const [cost, setCost] = React.useState("");
-  const [inStock, setInStock] = React.useState("");
-  const [description, setDescription] = React.useState("");
+  const [foodName, setFoodName] = React.useState("");
+  const [price, setPrice] = React.useState("");
+  const [quantity, setQuantity] = React.useState("");
   const [image, setImage] = React.useState([]);
-
-  const [category, setCategory] = React.useState("");
-  const [expire, setExpire] = React.useState("");
-  const [status, setStatus] = React.useState("");
-  // const [supplierId, setSupplierId] = React.useState("");
-
-  const [supplierId, setSupplier] = React.useState(null);
+  const [recipe_id, setRecipe] = React.useState(null);
   const [previousValue, setPreviousValue] = React.useState(null);
-  const [getSupplier, setGetSupplier] = React.useState([]);
-
-  //add product function
-  const editProduct = async (e) => {
-    e.preventDefault();
-    const data = new FormData();
-
-    data.append("title", title);
-    data.append("batch", batch);
-    data.append("cost", cost);
-    data.append("inStock", inStock);
-    data.append("category", category);
-    data.append("description", description);
-    data.append("image", image);
-    data.append("expire", expire);
-    data.append("status", status);
-    data.append("supplierId", supplierId.value);
-    try {
-      const response = await fetch(`${base_url}product/product/${params.id}`, {
-        method: "PUT",
-        body: data,
-      });
-      // console.log(response);
-      navigate("/admin-dashboard/product");
-      toast.success("product editted successfully");
-    } catch (err) {
-      toast.error(getError(err));
-    }
-  };
-  // get product info
-  React.useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const fetched = await fetch(`${base_url}product/product/${params.id}`, {
-          method: "GET",
-        });
-        const detail = await fetched.json();
-        setTitle(detail.title);
-        setBatch(detail.batch);
-        setCost(detail.cost);
-        setInStock(detail.inStock);
-        setDescription(detail.description);
-        setImage(detail.image);
-        setCategory(detail.category);
-        setExpire(detail.expire);
-        setStatus(detail.status);
-        setPreviousValue(detail.Supplier.company);
-      } catch (err) {
-        toast.error(getError(err));
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
-  //get all supplier
-  const fetchSupplier = async () => {
-    try {
-      const fetched = await fetch(`${base_url}vendor/vendors`);
-      const jsonData = await fetched.json();
-      setGetSupplier(jsonData);
-    } catch (err) {
-      toast.error(getError(err));
-    }
-  };
-  React.useEffect(() => {
-    fetchSupplier();
-  }, []);
-
-  const options = getSupplier.map((item) => ({
-    value: item.id,
-    label: item.company,
-  }));
+  const [getRecipe, setGetRecipe] = React.useState([]);
 
   // Function to handle select change
   const handleSelectChange = (selectedOption) => {
-    setSupplier(selectedOption);
+    setRecipe(selectedOption);
   };
+
+  //add product function
+  const addProduct = async (e) => {
+    e.preventDefault();
+    const data = new FormData();
+
+    data.append("foodName", foodName);
+    data.append("price", price);
+    data.append("quantity", quantity);
+    data.append("image", image);
+    data.append("recipe_id", recipe_id.value);
+
+    try {
+      const response = await fetch(
+        `${base_url}recipe/cookedFood/${params.id}`,
+        {
+          method: "PUT",
+          body: data,
+        }
+      );
+      navigate("/admin-dashboard/foods");
+      toast.success("Product edited successfully");
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  };
+
+  //get all recipes
+  const fetchRecipe = async () => {
+    try {
+      const fetched = await fetch(`${base_url}recipe/recipes`);
+      const jsonData = await fetched.json();
+      setGetRecipe(jsonData);
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  };
+
+  React.useEffect(() => {
+    fetchRecipe();
+  }, []);
+  //get all food info
+  const fetchProducts = async () => {
+    try {
+      const fetched = await fetch(`${base_url}recipe/cookedFood/${params.id}`, {
+        method: "GET",
+      });
+      const detail = await fetched.json();
+      console.log(detail);
+      setFoodName(detail.foodName);
+      setPrice(detail.price);
+      setQuantity(detail.quantity);
+      setPreviousValue(detail.Recipe.title);
+      setImage(detail.image);
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  };
+
+  React.useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  //   console.log(recipe_id);
+  console.log(previousValue);
+
+  //recipe options
+  const options = getRecipe.map((item) => ({
+    value: item.id,
+    label: item.title,
+  }));
 
   return (
     <div style={{ display: "flex" }}>
@@ -154,7 +147,7 @@ export default function EditProductScreen() {
                 Dashboard
               </Link>
               <Typography color="primary" fontWeight={500} fontSize={12}>
-                Products
+                Foods
               </Typography>
             </Breadcrumbs>
           </Box>
@@ -170,7 +163,7 @@ export default function EditProductScreen() {
             }}
           >
             <Typography level="h2" component="h1">
-              Edit Product
+              Edit Food
             </Typography>
             <Link to="/product">
               <Button
@@ -178,7 +171,7 @@ export default function EditProductScreen() {
                 // startDecorator={<AddIcon />}
                 size="sm"
               >
-                Back to Product
+                Back to Foods
               </Button>
             </Link>
           </Box>
@@ -218,7 +211,7 @@ export default function EditProductScreen() {
                     <Button
                       size="sm"
                       variant="solid"
-                      onClick={editProduct}
+                      onClick={addProduct}
                       sx={{ width: "100%" }}
                       type="submit"
                     >
@@ -229,128 +222,68 @@ export default function EditProductScreen() {
                 <Stack spacing={2} sx={{ flexGrow: 1 }}>
                   <Stack direction="row" spacing={2}>
                     <FormControl sx={{ flexGrow: 1 }}>
-                      <FormLabel>Product Name</FormLabel>
+                      <FormLabel>Food Name</FormLabel>
                       <Input
                         size="sm"
-                        placeholder="Product Name"
+                        placeholder="Tomato"
                         sx={{ flexGrow: 1 }}
-                        value={title}
+                        value={foodName}
                         required
-                        onChange={(e) => setTitle(e.target.value)}
-                      />
-                    </FormControl>
-                    <FormControl sx={{ flexGrow: 1 }}>
-                      <FormLabel>Product Batch</FormLabel>
-                      <Input
-                        size="sm"
-                        type="text"
-                        placeholder="e.g January"
-                        sx={{ flexGrow: 1 }}
-                        value={batch}
-                        required
-                        onChange={(e) => setBatch(e.target.value)}
+                        onChange={(e) => setFoodName(e.target.value)}
                       />
                     </FormControl>
                   </Stack>
                   <Stack direction="row" spacing={2}>
                     <FormControl sx={{ flexGrow: 1 }}>
-                      <FormLabel>Product Cost</FormLabel>
+                      <FormLabel>CookedFood Price</FormLabel>
                       <Input
                         sx={{ flexGrow: 1 }}
                         size="sm"
                         placeholder="e.g 12000"
                         type="number"
-                        value={cost}
+                        value={price}
                         required
-                        onChange={(e) => setCost(e.target.value)}
+                        onChange={(e) => setPrice(e.target.value)}
                       />
                     </FormControl>
                     <FormControl sx={{ flexGrow: 1 }}>
-                      <FormLabel>Product Stock</FormLabel>
+                      <FormLabel>Food Quantity</FormLabel>
                       <Input
                         sx={{ flexGrow: 1 }}
                         size="sm"
-                        placeholder="No. of product available"
-                        value={inStock}
+                        placeholder="e.g 8"
+                        value={quantity}
                         required
-                        onChange={(e) => setInStock(e.target.value)}
-                      />
-                    </FormControl>
-                    <FormControl sx={{ flexGrow: 1 }}>
-                      <FormLabel>Product Category</FormLabel>
-                      <Input
-                        size="sm"
-                        placeholder="Laptop"
-                        sx={{ flexGrow: 1 }}
-                        value={category}
-                        required
-                        onChange={(e) => setCategory(e.target.value)}
+                        onChange={(e) => setQuantity(e.target.value)}
                       />
                     </FormControl>
                   </Stack>
+
                   <Stack direction="row" spacing={2}>
                     <FormControl sx={{ flexGrow: 1 }}>
-                      <FormLabel>Product Expire Date</FormLabel>
+                      <FormLabel> Product Recipe Name</FormLabel>
                       <Input
                         sx={{ flexGrow: 1 }}
                         size="sm"
-                        placeholder="e.g 27-9-2024"
-                        value={expire}
-                        required
-                        onChange={(e) => setExpire(e.target.value)}
-                      />
-                    </FormControl>
-                    <FormControl sx={{ flexGrow: 1 }}>
-                      <FormLabel>Product Status</FormLabel>
-                      <Input
-                        sx={{ flexGrow: 1 }}
-                        size="sm"
-                        placeholder="e.g instock"
-                        value={status}
-                        required
-                        onChange={(e) => setStatus(e.target.value)}
-                      />
-                    </FormControl>
-
-                    <FormControl sx={{ flexGrow: 1 }}>
-                      <FormLabel>Product Supplier Company</FormLabel>
-                      <Input
-                        sx={{ flexGrow: 1 }}
-                        size="sm"
-                        // placeholder="e.g instock"
                         value={previousValue}
                         required
                         disabled
                         onChange={(e) => setPreviousValue(e.target.value)}
                       />
                     </FormControl>
-                  </Stack>
-                  <Stack>
                     <FormControl sx={{ flexGrow: 1 }}>
-                      <FormLabel>Product Supplier</FormLabel>
-
+                      <FormLabel>Food Recipe</FormLabel>
                       <Select
                         options={options}
-                        value={supplierId}
+                        value={recipe_id}
+                        defaultValue={previousValue}
                         onChange={handleSelectChange}
-                        placeholder="Select a supplier"
+                        placeholder="Select an recipe"
                       />
                     </FormControl>
                   </Stack>
                   <Stack spacing={2} sx={{ my: 1 }}>
-                    <FormLabel> Product Description</FormLabel>
-                    <Textarea
-                      size="sm"
-                      minRows={4}
-                      sx={{ mt: 1.5 }}
-                      placeholder="Write a description about the product."
-                      value={description}
-                      required
-                      onChange={(e) => setDescription(e.target.value)}
-                    />
-                  </Stack>
-                  <Stack spacing={2} sx={{ my: 1 }}>
-                    <FormLabel> Product Image</FormLabel>
+                    <FormLabel> Food Image</FormLabel>
                     <Card
                       variant="soft"
                       sx={[

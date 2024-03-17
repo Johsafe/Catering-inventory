@@ -14,7 +14,7 @@ import LocalMallIcon from "@mui/icons-material/LocalMall";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import Container from "@mui/material/Container";
-import SideBar from "../Layout/sideBar";
+import SideBar from "../../Utils/CashierSideBar";
 // import { Card } from "@mui/material";
 // import { Pie } from "react-chartjs-2";
 
@@ -26,7 +26,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.primary,
 }));
 
-export default function DashboardScreen() {
+export default function CashierDashboardScreen() {
   // const [productCount, setProductCount] = React.useState([]);
   // const [orderCount, setOrderCount] = React.useState([]);
   // const [OutofStockCount, setOutofStockCount] = React.useState([]);

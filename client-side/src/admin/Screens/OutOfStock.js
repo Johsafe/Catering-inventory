@@ -26,9 +26,9 @@ import Avatar from "react-avatar";
 import EditStockModal from "./EditProductStock";
 import { Link } from "react-router-dom";
 import { Container } from "@mui/material";
-import { base_url, getError } from "../Utils/Utils";
+import { base_url, getError } from "../../Utils/Utils";
 import { toast } from "react-toastify";
-import SideBar from "../Layout/sideBar";
+import SideBar from "../../Utils/AdminSideBar";
 
 export default function OutOfStock() {
   const [open, setOpen] = React.useState(false);

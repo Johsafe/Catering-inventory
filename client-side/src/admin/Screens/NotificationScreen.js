@@ -27,9 +27,9 @@ import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
 import { Container } from "@mui/material";
-import { base_url, getError } from "../Utils/Utils";
+import { base_url, getError } from "../../Utils/Utils";
 import { toast } from "react-toastify";
-import SideBar from "../Layout/sideBar";
+import SideBar from "../../Utils/AdminSideBar";
 
 export default function Notifications() {
   const [open, setOpen] = React.useState(false);
@@ -102,11 +102,6 @@ export default function Notifications() {
   //     </FormControl>
   //   </React.Fragment>
   // );
-
-    // Calculate the number of low quantity products
-    const notificationCount = lowQuantityProducts.length;
-
-
   return (
     <div style={{ display: "flex" }}>
       <SideBar />
@@ -300,7 +295,7 @@ export default function Notifications() {
                             </div>
                           </Box>
                         </td>
-                                             <td style={{ color: "red" }}>
+                        <td style={{ color: "red" }}>
                           <p>Please add more quantity to this product.</p>
                         </td>
                         {/* <td>

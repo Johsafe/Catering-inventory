@@ -13,9 +13,9 @@ import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import { useNavigate, useParams } from "react-router-dom";
 import { Container } from "@mui/material";
-import { base_url, getError } from "../Utils/Utils";
+import { base_url, getError } from "../../Utils/Utils";
 import { toast } from "react-toastify";
-import SideBar from "../Layout/sideBar";
+import SideBar from "../../Utils/AdminSideBar";
 
 export default function EditSupplier() {
   //post data
@@ -59,7 +59,7 @@ export default function EditSupplier() {
       });
       await updatecourse.json();
       toast.success("supplier updated successfully");
-      navigate("/supplier");
+      navigate("/admin-dashboard/supplier");
     } catch (err) {
       toast.error(getError(err));
     }

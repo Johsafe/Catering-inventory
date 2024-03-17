@@ -17,8 +17,8 @@ import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import { useNavigate } from "react-router-dom";
 import { Container } from "@mui/material";
 import { toast } from "react-toastify";
-import { base_url, getError } from "../Utils/Utils";
-import SideBar from "../Layout/sideBar";
+import { base_url, getError } from "../../Utils/Utils";
+import SideBar from "../../Utils/AdminSideBar";
 import Select from "react-select";
 
 export default function AddRecipe() {
@@ -74,7 +74,7 @@ export default function AddRecipe() {
         body: JSON.stringify(formData),
       });
       console.log("Form submitted successfully", response);
-      navigate("/recipe");
+      navigate("/admin-dashboard/recipe");
     } catch (error) {
       console.error("Error submitting form", error);
     }
@@ -203,7 +203,7 @@ export default function AddRecipe() {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          gap:'40px'
+                          gap: "40px",
                         }}
                       >
                         <b>Quantity for {veg.label}:</b>

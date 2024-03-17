@@ -15,8 +15,8 @@ import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import { useNavigate } from "react-router-dom";
 import { Container } from "@mui/material";
 import { toast } from "react-toastify";
-import { base_url, getError } from "../Utils/Utils";
-import SideBar from "../Layout/sideBar";
+import { base_url, getError } from "../../Utils/Utils";
+import SideBar from "../../Utils/AdminSideBar";
 
 export default function AddSupplier() {
   // //image
@@ -26,7 +26,7 @@ export default function AddSupplier() {
 
   //post data
   const navigate = useNavigate();
-  const [ name, setName] = React.useState("");
+  const [name, setName] = React.useState("");
   const [company, setCompany] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [address, setAddress] = React.useState("");
@@ -47,7 +47,7 @@ export default function AddSupplier() {
       });
       await addsupplier.json();
       toast.success("supplier created successfully");
-      navigate("/supplier");
+      navigate("/admin-dashboard/supplier");
     } catch (err) {
       toast.error(getError(err));
     }
@@ -129,7 +129,6 @@ export default function AddSupplier() {
                 spacing={3}
                 sx={{ display: { xs: "none", md: "flex" }, my: 1 }}
               >
-                
                 <Stack spacing={2} sx={{ flexGrow: 1 }}>
                   <Stack direction="row" spacing={2}>
                     <FormControl sx={{ flexGrow: 1 }}>
@@ -184,7 +183,7 @@ export default function AddSupplier() {
                   </Stack>
 
                   <Stack spacing={2} sx={{ my: 1 }}>
-                  <FormControl sx={{ flexGrow: 1 }}>
+                    <FormControl sx={{ flexGrow: 1 }}>
                       <FormLabel>Supplier Address</FormLabel>
                       <Input
                         sx={{ flexGrow: 1 }}
@@ -205,10 +204,9 @@ export default function AddSupplier() {
                       sx={{ width: "100%" }}
                       type="submit"
                     >
-                     Add supplier
+                      Add supplier
                     </Button>
                   </div>
-                  
                 </Stack>
               </Stack>
             </Card>

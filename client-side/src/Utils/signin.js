@@ -14,12 +14,13 @@ import Input from "@mui/joy/Input";
 import Typography from "@mui/joy/Typography";
 import Stack from "@mui/joy/Stack";
 import BrightnessAutoRoundedIcon from "@mui/icons-material/BrightnessAutoRounded";
-import GoogleIcon from '../Utils/GoogleIcon';
+import GoogleIcon from "./GoogleIcon";
 
 import axios from "axios";
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { base_url, getError } from "../Utils/Utils";
+import { base_url, getError } from "./Utils";
+
 
 export default function Loginin() {
   //auth
@@ -30,13 +31,16 @@ export default function Loginin() {
   const onSubmitForm = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post(`${base_url}owner/login`, {
+      const response = await axios.post(`${base_url}user/login`, {
         email,
         password,
       });
-      // localStorage.setItem("Logged", JSON.stringify(data));
-      localStorage.setItem('token', data.token);
-      navigate("/dashboard");
+      const { redirectURL } = response.data;
+      navigate(redirectURL);
+      localStorage.setItem("token", response.data.token);
+      // localStorage.setItem("Logged", JSON.stringify(response.data));
+      localStorage.setItem("username", response.data.username);
+      localStorage.setItem("email", response.data.email);
     } catch (err) {
       toast.error(getError(err));
     }
@@ -149,9 +153,7 @@ export default function Loginin() {
               or
             </Divider>
             <Stack gap={4} sx={{ mt: 2 }}>
-              <form
-                onSubmit={onSubmitForm}
-              >
+              <form onSubmit={onSubmitForm}>
                 <FormControl required>
                   <FormLabel>Email</FormLabel>
                   <Input

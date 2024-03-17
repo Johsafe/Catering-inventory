@@ -31,8 +31,8 @@ import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
 import { Container } from "@mui/material";
 import { toast } from "react-toastify";
-import { base_url, getError } from "../Utils/Utils";
-import SideBar from "../Layout/sideBar";
+import { base_url, getError } from "../../Utils/Utils";
+import SideBar from "../../Utils/AdminSideBar";
 
 function RowMenu() {
   return (
@@ -61,7 +61,7 @@ export default function UsersScreen() {
   React.useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const fetched = await fetch(`${base_url}authenicate/users`);
+        const fetched = await fetch(`${base_url}user/users`);
         const jsonData = await fetched.json();
         setUsers(jsonData);
       } catch (err) {
@@ -82,6 +82,7 @@ export default function UsersScreen() {
       </FormControl>
     </React.Fragment>
   );
+  var i = 1;
   return (
     <div style={{ display: "flex" }}>
       <SideBar />
@@ -153,7 +154,7 @@ export default function UsersScreen() {
                 Dashboard
               </Link>
               <Typography color="primary" fontWeight={500} fontSize={12}>
-                Customers
+                Users
               </Typography>
             </Breadcrumbs>
           </Box>
@@ -233,8 +234,8 @@ export default function UsersScreen() {
               <thead>
                 <tr>
                   <th style={{ width: 120, padding: "12px 6px" }}>N/A</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Phone</th>
-                  <th style={{ width: 240, padding: "12px 6px" }}>FirstName</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Role</th>
+                  <th style={{ width: 240, padding: "12px 6px" }}>Username</th>
                   <th style={{ width: 240, padding: "12px 6px" }}>Customer</th>
                   <th style={{ width: 140, padding: "12px 6px" }}> </th>
                 </tr>
@@ -243,14 +244,14 @@ export default function UsersScreen() {
                 {users.map((user) => (
                   <tr key={user.id}>
                     <td>
-                      <Typography level="body-xs">#</Typography>
+                      <Typography level="body-xs">{i++}</Typography>
                     </td>
                     <td>
-                      <Typography level="body-xs">{user.mobile}</Typography>
+                      <Typography level="body-xs">{user.role}</Typography>
                     </td>
                     <td>
                       {" "}
-                      <Typography level="body-xs">{user.fname}</Typography>
+                      <Typography level="body-xs">{user.username}</Typography>
                     </td>
                     <td>
                       <Box
@@ -265,11 +266,12 @@ export default function UsersScreen() {
                             "rgb(174, 185, 233)",
                           ])}
                           round={true}
-                          name={user.sname}
+                          src="https://material-kit-react.devias.io/assets/avatars/avatar-miron-vitold.png"
+                          name={user.username}
                         />
                         <div>
                           <Typography level="body-xs">
-                            {user.fname} {user.sname}
+                            {user.username}
                           </Typography>
                           <Typography level="body-xs">{user.email}</Typography>
                         </div>

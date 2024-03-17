@@ -35,8 +35,8 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { Link } from "react-router-dom";
 import { ButtonGroup, Container } from "@mui/material";
 import { toast } from "react-toastify";
-import { base_url, getError } from "../Utils/Utils";
-import SideBar from "../Layout/sideBar";
+import { base_url, getError } from "../../Utils/Utils";
+import SideBar from "../../Utils/AdminSideBar";
 
 function RowMenu() {
   return (
@@ -99,6 +99,8 @@ export default function RecipeScreen() {
       </FormControl>
     </React.Fragment>
   );
+
+  var i = 1;
   return (
     <div style={{ display: "flex" }}>
       <SideBar />
@@ -188,7 +190,7 @@ export default function RecipeScreen() {
             <Typography level="h2" component="h1">
               Recipes
             </Typography>
-            <Link to="/addrecipe">
+            <Link to="/admin-dashboard/addrecipe">
               <Button
                 color="primary"
                 startDecorator={<AddCircleIcon />}
@@ -262,7 +264,7 @@ export default function RecipeScreen() {
                 {recipe.map((recipe) => (
                   <tr key={recipe.id}>
                     <td>
-                      <Typography level="body-xs">#</Typography>
+                      <Typography level="body-xs">{i++}</Typography>
                     </td>
                     {/* <td>
                       <Typography level="body-xs">
@@ -280,13 +282,17 @@ export default function RecipeScreen() {
                           aria-label="text button group"
                           style={{ display: "flex", alignItems: "center" }}
                         >
-                           <Button style={{ background: "none" }}>
-                          <Link to={`/${recipe.id}/editsupplier`}>
-                            <EditIcon style={{ color: "blue" }} />
-                          </Link>
+                          <Button style={{ background: "none" }}>
+                            <Link
+                              to={`/admin-dashboard/${recipe.id}/editrecipe`}
+                            >
+                              <EditIcon style={{ color: "blue" }} />
+                            </Link>
                           </Button>
                           <Button style={{ background: "none" }}>
-                            <Link to={`/${recipe.id}/viewrecipe`}>
+                            <Link
+                              to={`/admin-dashboard/${recipe.id}/viewrecipe`}
+                            >
                               <VisibilityIcon />
                             </Link>
                           </Button>

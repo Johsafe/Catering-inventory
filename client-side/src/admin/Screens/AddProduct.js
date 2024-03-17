@@ -11,6 +11,7 @@ import Typography from "@mui/joy/Typography";
 import Breadcrumbs from "@mui/joy/Breadcrumbs";
 import Link from "@mui/joy/Link";
 import Card from "@mui/joy/Card";
+import Select from "react-select";
 
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
@@ -19,8 +20,8 @@ import FileUploadRoundedIcon from "@mui/icons-material/FileUploadRounded";
 import { useNavigate } from "react-router-dom";
 import { Container } from "@mui/material";
 import { toast } from "react-toastify";
-import { base_url, getError } from "../Utils/Utils";
-import SideBar from "../Layout/sideBar";
+import { base_url, getError } from "../../Utils/Utils";
+import SideBar from "../../Utils/AdminSideBar";
 
 export default function AddProduct() {
   //image
@@ -40,7 +41,8 @@ export default function AddProduct() {
   const [category, setCategory] = React.useState("");
   const [expire, setExpire] = React.useState("");
   const [status, setStatus] = React.useState("");
-  const [supplierId, setSupplierId] = React.useState("");
+  const [supplierId, setSupplier] = React.useState(null);
+  const [getSupplier, setGetSupplier] = React.useState([]);
 
   //add product function
   const addProduct = async (e) => {
@@ -56,19 +58,44 @@ export default function AddProduct() {
     data.append("image", image);
     data.append("expire", expire);
     data.append("status", status);
-    data.append("supplierId", supplierId);
+    data.append("supplierId", supplierId.value);
 
     try {
       const response = await fetch(`${base_url}product/create`, {
         method: "POST",
         body: data,
       });
-      navigate("/product");
+      // navigate("/admin-dashboard/product");
+      console.log(response);
       toast.success("Product added successfully");
     } catch (err) {
       toast.error(getError(err));
     }
   };
+
+  // Function to handle select change
+  const handleSelectChange = (selectedOption) => {
+    setSupplier(selectedOption);
+  };
+
+  //get all supplier
+  const fetchSupplier = async () => {
+    try {
+      const fetched = await fetch(`${base_url}vendor/vendors`);
+      const jsonData = await fetched.json();
+      setGetSupplier(jsonData);
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  };
+  React.useEffect(() => {
+    fetchSupplier();
+  }, []);
+
+  const options = getSupplier.map((item) => ({
+    value: item.id,
+    label: item.company,
+  }));
 
   return (
     <div style={{ display: "flex" }}>
@@ -146,7 +173,6 @@ export default function AddProduct() {
                 spacing={3}
                 sx={{ display: { xs: "none", md: "flex" }, my: 1 }}
               >
-                
                 <div>
                   <Stack direction="column" spacing={1}>
                     <AspectRatio
@@ -168,7 +194,7 @@ export default function AddProduct() {
                       sx={{ width: "100%" }}
                       type="submit"
                     >
-                     Add Product
+                      Add Product
                     </Button>
                   </div>
                 </div>
@@ -260,35 +286,12 @@ export default function AddProduct() {
                     </FormControl>
                     <FormControl sx={{ flexGrow: 1 }}>
                       <FormLabel>Product Supplier</FormLabel>
-                      <Input
-                        size="sm"
-                        placeholder="e.g Refurbished"
-                        sx={{ flexGrow: 1 }}
+                      <Select
+                        options={options}
                         value={supplierId}
-                        required
-                        onChange={(e) => setSupplierId(e.target.value)}
+                        onChange={handleSelectChange}
+                        placeholder="Select a Supplier"
                       />
-                       {/* <Select
-                    size="sm"
-                    // startDecorator={<AccessTimeFilledRoundedIcon />}
-                    defaultValue="1"
-                    value={supplierId}
-                        required
-                        onChange={(e) => setSupplierId(e.target.value)}
-                  >
-                    <Option value="1">
-                      Organic Farm (Bangkok){' '}
-                      <Typography textColor="text.tertiary" ml={0.5}>
-                       Vendor 1
-                      </Typography>
-                    </Option>
-                    <Option value="2">
-                      Groceries{' '}
-                      <Typography textColor="text.tertiary" ml={0.5}>
-                        Vendor 2
-                      </Typography>
-                    </Option>
-                  </Select> */}
                     </FormControl>
                   </Stack>
 

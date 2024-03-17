@@ -15,8 +15,8 @@ import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
 import Typography from "@mui/joy/Typography";
 import Breadcrumbs from "@mui/joy/Breadcrumbs";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteForever from "@mui/icons-material/DeleteForever";
 import ButtonGroup from "@mui/material/ButtonGroup";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SearchIcon from "@mui/icons-material/Search";
@@ -26,43 +26,43 @@ import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
+// import DeleteProductModel from "./DeleteProductModel";
 import { Container } from "@mui/material";
 import { base_url, getError } from "../../Utils/Utils";
 import { toast } from "react-toastify";
 import SideBar from "../../Utils/AdminSideBar";
+import DeleteFoodModal from "./DeleteFoodModal";
 
-// import { DeleteForever } from "@mui/icons-material";
-
-export default function SupplierScreen() {
+export default function FoodScreen() {
   const [open, setOpen] = React.useState(false);
-  const [suppliers, setSuppliers] = React.useState([]);
-  //get all Suppliers
-  const fetchSuppliers = async () => {
+
+  const [products, setProducts] = React.useState([]);
+  const [filteredProducts, setFilteredProducts] = React.useState([]);
+  const [section, setSection] = React.useState([]);
+  const [category, setCategory] = React.useState([]);
+  //get all products
+  const fetchProducts = async () => {
     try {
-      const fetched = await fetch(`${base_url}vendor/vendors`);
+      const fetched = await fetch(`${base_url}recipe/cookedFood`);
       const jsonData = await fetched.json();
-      setSuppliers(jsonData);
+      // const uniqueBatch = [
+      //   ...new Set(jsonData.map((product) => product.batch)),
+      // ];
+      // const uniqueCate = [
+      //   ...new Set(jsonData.map((product) => product.category)),
+      // ];
+      // setSection(uniqueBatch);
+      // setCategory(uniqueCate);
+      setProducts(jsonData);
+      setFilteredProducts(jsonData);
     } catch (err) {
       toast.error(getError(err));
     }
   };
 
   React.useEffect(() => {
-    fetchSuppliers();
+    fetchProducts();
   }, []);
-
-  //delete supplier
-  async function deleteSupplier(id) {
-    try {
-      await fetch(`${base_url}vendor/vendor/${id}`, {
-        method: "DELETE",
-      });
-      setSuppliers(suppliers.filter((supplier) => supplier._id !== id));
-      toast.success("Supplier deleted successfully");
-    } catch (err) {
-      toast.error(getError(err));
-    }
-  }
 
   //search by title
   const [search, setSearch] = React.useState("");
@@ -71,27 +71,102 @@ export default function SupplierScreen() {
     setSearch(searchValue);
 
     if (search !== "") {
-      const newContactList = suppliers.filter((supplier) => {
-        return supplier.name
+      const newList = products.filter((product) => {
+        // return (product.title)
+        // return Object.values(product.title)
+        //   .join('')
+        //   .toLowerCase()
+        //   .includes(search.toLowerCase());
+        return product.title
           .join("")
           .toLowerCase()
           .includes(search.toLowerCase());
       });
-      setSearchResult(newContactList);
+      setSearchResult(newList);
     } else {
-      setSearchResult(suppliers);
+      setSearchResult(products);
     }
   };
+
+  // filter by brand
+  // function filterBatch(value){
+  //   let productArray=[]
+  //   filteredProducts.filter((product)=>{
+  //     if(product.brand===value){
+  //       productArray.push(product)
+  //       setProducts(productArray)
+  //     }else if(value==="All"){
+  //       setProducts(filteredProducts)
+  //     }
+  //   })
+  // }
+
+  // filter by brand
+  function filterBatch(value) {
+    if (value === "All") {
+      setProducts(filteredProducts);
+      return;
+    }
+
+    const batchFilteredProducts = filteredProducts.filter(
+      (product) => product.batch === value
+    );
+    setProducts(batchFilteredProducts);
+  }
+
+  // filter by category
+  function filterCate(value) {
+    if (value === "All") {
+      setProducts(filteredProducts);
+      return;
+    }
+
+    const cateFilteredProducts = filteredProducts.filter(
+      (product) => product.category === value
+    );
+    setProducts(cateFilteredProducts);
+  }
+
+  // // filter by category
+  // function filterCate(value){
+  //   let cateArray=[]
+  //   filteredProducts.filter((product)=>{
+  //     if(product.category===value){
+  //       cateArray.push(product)
+  //       setProducts(cateArray)
+  //     }else if(value==="All"){
+  //       setProducts(filteredProducts)
+  //     }
+  //   })
+  // }
+  // const uniqueBatch = [...new Set(products.map((product) => product.brand))];
+  // const batchOptions = section.map((batch) => ({ value: batch, label: batch }));
+  // const categoryOptions = category.map((cate) => ({
+  //   value: cate,
+  //   label: cate,
+  // }));
   // filter
   const renderFilters = () => (
     <React.Fragment>
       <FormControl size="sm" style={{ zIndex: 100 }}>
-        <FormLabel>Brand</FormLabel>
-        <Select size="sm" placeholder="Filter by brand" disabled />
+        <FormLabel>Batch</FormLabel>
+        <Select
+          disabled="true"
+          size="sm"
+          placeholder="Filter by brand"
+          onChange={(e) => filterBatch(e.value)}
+          // options={[{ value: "All", label: "All" }, ...batchOptions]}
+        />
       </FormControl>
       <FormControl size="sm" style={{ zIndex: 100 }}>
         <FormLabel>Category</FormLabel>
-        <Select size="sm" placeholder="Filter by category" disabled />
+        <Select
+          disabled="true"
+          size="sm"
+          placeholder="Filter by category"
+          onChange={(e) => filterCate(e.value)}
+          // options={[{ value: "All", label: "All" }, ...categoryOptions]}
+        />
       </FormControl>
     </React.Fragment>
   );
@@ -167,7 +242,7 @@ export default function SupplierScreen() {
                 Dashboard
               </Link>
               <Typography color="primary" fontWeight={500} fontSize={12}>
-                Suppliers
+                Foods
               </Typography>
             </Breadcrumbs>
           </Box>
@@ -183,20 +258,20 @@ export default function SupplierScreen() {
             }}
           >
             <Typography level="h2" component="h1">
-              Suppliers
+              Foods
             </Typography>
-            <Link to="/admin-dashboard/addsupplier">
+            <Link to="/admin-dashboard/addfood">
               <Button
                 color="primary"
-                // startDecorator={<AddIcon />}
+                startDecorator={<AddCircleIcon />}
                 size="sm"
               >
-                Add Supplier
+                Add Food
               </Button>
             </Link>
           </Box>
 
-          {/* search for Suppliers */}
+          {/* search for foods */}
           <Box
             className="SearchAndFilters-tabletUp"
             sx={{
@@ -211,7 +286,7 @@ export default function SupplierScreen() {
             }}
           >
             <FormControl sx={{ flex: 1 }} size="sm">
-              <FormLabel>Search for supplier</FormLabel>
+              <FormLabel>Search for foods</FormLabel>
               <Input
                 // size="sm"
                 placeholder="Search"
@@ -219,7 +294,7 @@ export default function SupplierScreen() {
                 onChange={(e) => searchHandler(e.target.value)}
               />
             </FormControl>
-            {renderFilters()}
+            {/* {renderFilters()} */}
           </Box>
           <Sheet
             className="OrderTableContainer"
@@ -249,22 +324,20 @@ export default function SupplierScreen() {
             >
               <thead>
                 <tr>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Name</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Company</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Phone</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}>Address</th>
-                  <th style={{ width: 240, padding: "12px 6px" }}>Supplier</th>
-                  <th style={{ width: 140, padding: "12px 6px" }}> </th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Food Name</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Price</th>
+                  <th style={{ width: 140, padding: "12px 6px" }}>Quantity</th>
+                  <th style={{ width: 240, padding: "12px 6px" }}>Product</th>
+                  <th style={{ width: 240, padding: "12px 6px" }}></th>
                 </tr>
               </thead>
               <tbody>
                 {search.length > 1
-                  ? searchResult.map((supplier) => (
-                      <tr key={supplier.id}>
-                        <td>{supplier.name}</td>
-                        <td>{supplier.company}</td>
-                        <td>{supplier.phone}</td>
-                        <td>{supplier.address}</td>
+                  ? searchResult.map((product) => (
+                      <tr key={product.id}>
+                        <td>{product.foodName}</td>
+                        <td>Ksh. {product.price}.00</td>
+                        <td>{product.quantity}</td>
                         <td>
                           <Box
                             sx={{
@@ -282,55 +355,31 @@ export default function SupplierScreen() {
                                   "rgb(236, 224, 167)",
                                   "rgb(174, 185, 233)",
                                 ])}
-                                round={true}
-                                src="https://material-kit-react.devias.io/assets/avatars/avatar-jie-yan-song.png"
-                                name={supplier.name}
-                                // alt={supplier.email}
+                                // round={true}
+                                src={product.image}
+                                alt={product.foodName}
                               />
                             </Typography>
                             <div>
                               <Typography level="body-xs">
-                                {supplier.name}
+                                {product.foodName}
                               </Typography>
-                              <Typography level="body-xs">
-                                {supplier.email}
+                              <Typography
+                                level="body-xs"
+                                sx={{ color: "green" }}
+                              >
+                                Available
                               </Typography>
                             </div>
                           </Box>
-                        </td>
-                        <td>
-                          <div>
-                            <ButtonGroup
-                              variant="text"
-                              aria-label="text button group"
-                              style={{ display: "flex", alignItems: "center" }}
-                            >
-                              <Link
-                                to={`/admin-dashboard/${supplier.id}/editsupplier`}
-                              >
-                                <EditIcon style={{ color: "blue" }} />
-                              </Link>
-                              {/* <DeleteProductModel supplier={supplier} />
-                               */}
-
-                              <Button
-                                onClick={() => deleteSupplier(supplier.id)}
-                                style={{ background: "none" }}
-                              >
-                                {/* <DeleteIcon style={{ color: "red" }} /> */}
-                                <DeleteForever sx={{ color: "red" }} />
-                              </Button>
-                            </ButtonGroup>
-                          </div>
                         </td>
                       </tr>
                     ))
-                  : suppliers.map((supplier) => (
-                      <tr key={supplier.id}>
-                        <td>{supplier.name}</td>
-                        <td>{supplier.company}</td>
-                        <td>{supplier.phone}</td>
-                        <td>{supplier.address}</td>
+                  : products.map((product) => (
+                      <tr key={product.id}>
+                        <td>{product.foodName}</td>
+                        <td>Ksh. {product.price}.00</td>
+                        <td>{product.quantity}</td>
                         <td>
                           <Box
                             sx={{
@@ -348,18 +397,20 @@ export default function SupplierScreen() {
                                   "rgb(236, 224, 167)",
                                   "rgb(174, 185, 233)",
                                 ])}
-                                round={true}
-                                src="https://material-kit-react.devias.io/assets/avatars/avatar-jie-yan-song.png"
-                                name={supplier.name}
-                                // alt={supplier.email}
+                                // round={true}
+                                src={product.image}
+                                alt={product.foodName}
                               />
                             </Typography>
                             <div>
                               <Typography level="body-xs">
-                                {supplier.name}
+                                {product.foodName}
                               </Typography>
-                              <Typography level="body-xs">
-                                {supplier.email}
+                              <Typography
+                                level="body-xs"
+                                sx={{ color: "green" }}
+                              >
+                                Available
                               </Typography>
                             </div>
                           </Box>
@@ -372,19 +423,11 @@ export default function SupplierScreen() {
                               style={{ display: "flex", alignItems: "center" }}
                             >
                               <Link
-                                to={`/admin-dashboard/${supplier.id}/editsupplier`}
+                                to={`/admin-dashboard/${product.id}/editfood`}
                               >
                                 <EditIcon style={{ color: "blue" }} />
                               </Link>
-                              {/* <DeleteProductModel supplier={supplier} /> */}
-
-                              <Button
-                                onClick={() => deleteSupplier(supplier.id)}
-                                style={{ background: "none" }}
-                              >
-                                {/* <DeleteIcon style={{ color: "red" }} /> */}
-                                <DeleteForever sx={{ color: "red" }} />
-                              </Button>
+                              <DeleteFoodModal product={product} />
                             </ButtonGroup>
                           </div>
                         </td>

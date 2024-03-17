@@ -8,9 +8,9 @@ import { Box, Breadcrumbs, Typography } from "@mui/joy";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import Avatar from "react-avatar";
-import { base_url, getError } from "../Utils/Utils";
+import { base_url, getError } from "../../Utils/Utils";
 import { toast } from "react-toastify";
-import SideBar from "../Layout/sideBar";
+import SideBar from "../../Utils/AdminSideBar";
 
 export default function MarkOrderScreen() {
   const params = useParams();
@@ -18,9 +18,7 @@ export default function MarkOrderScreen() {
   //get an order
   async function getOrder() {
     try {
-      const response = await fetch(
-        `${base_url}order/orders/${params.id}`
-      );
+      const response = await fetch(`${base_url}order/orders/${params.id}`);
       const getorder = await response.json();
       setOrder(getorder);
     } catch (err) {
@@ -40,7 +38,6 @@ export default function MarkOrderScreen() {
   };
   return (
     <div style={{ display: "flex" }}>
-      
       <SideBar />
       <Helmet>
         <title>Order Details</title>
@@ -136,13 +133,12 @@ export default function MarkOrderScreen() {
                     <div>
                       <h5>Customer</h5>
                       <p>
-                        {order.shippingAddress &&
-                          order.shippingAddress.fname}{" "}
-                          {order.shippingAddress &&
-                          order.shippingAddress.sname}
+                        {order.shippingAddress && order.shippingAddress.fname}{" "}
+                        {order.shippingAddress && order.shippingAddress.sname}
                       </p>
-                      <p>{order.shippingAddress &&
-                          order.shippingAddress.email}</p>
+                      <p>
+                        {order.shippingAddress && order.shippingAddress.email}
+                      </p>
                     </div>
                   </div>
                   <div className="orderheaderdetails">
@@ -201,9 +197,7 @@ export default function MarkOrderScreen() {
                         order.OrderItems.map((item) => (
                           <tbody>
                             <tr>
-                              <td>
-                                {item.title}
-                              </td>
+                              <td>{item.title}</td>
                               <Box
                                 sx={{
                                   display: "flex",
