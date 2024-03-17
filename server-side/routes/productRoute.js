@@ -79,7 +79,7 @@ productRouter.get("/products", async (req, res) => {
       include: [
         {
           model: Supplier,
-          attributes: ["id", "name"],
+          attributes: ["id", "name","company"],
         },
       ],
     });
@@ -114,7 +114,7 @@ productRouter.get("/product/:id", async (req, res) => {
     include: [
       {
         model: Supplier,
-        attributes: ["id", "name"], // Specify which supplier attributes to include
+        attributes: ["id", "name","company"], // Specify which supplier attributes to include
       },
     ],
   });
@@ -137,6 +137,7 @@ productRouter.delete("/product/:id", async (req, res) => {
     }
     // Extract the public ID from the product's image URL
     const imageId = product.cloudinary_id;
+    console.log(imageId)
 
     // Delete the image from Cloudinary
     const deletionResult = await cloudinary.uploader.destroy(imageId);

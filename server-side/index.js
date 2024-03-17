@@ -16,7 +16,6 @@ const recipeRouter = require("./routes/recipeRoute");
 const orderRouter = require("./routes/OrderRoute");
 
 app.use("/user", authRouter);
-app.use("/role", roleRouter);
 app.use("/vendor", vendorRouter);
 app.use("/product",productRouter);
 app.use("/recipe",recipeRouter);

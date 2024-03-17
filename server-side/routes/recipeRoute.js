@@ -346,7 +346,11 @@ recipeRouter.get('/cookedFood/:id', async (req, res) => {
 
   try {
     // Fetch the cooked food item with the given ID
-    const cookedFood = await CookedFood.findByPk(id);
+    const cookedFood = await CookedFood.findByPk(id,{
+      include: {
+        model: Recipe,
+      }
+    });
 
     if (!cookedFood) {
       return res.status(404).json({ message: 'Cooked food not found' });
@@ -401,7 +405,7 @@ recipeRouter.delete('/cookedFood/:id', async (req, res) => {
 
 recipeRouter.put('/cookedFood/:id',multerUpload.single("image"), async (req, res) => {
   const { id } = req.params;
-  const { foodName, price, recipe_id } = req.body;
+  const { foodName, price, recipe_id ,quantity} = req.body;
 
   try {
     // Fetch the cooked food item with the given ID
@@ -420,6 +424,7 @@ recipeRouter.put('/cookedFood/:id',multerUpload.single("image"), async (req, res
     cookedFood.foodName = foodName;
     cookedFood.price = price;
     cookedFood.recipe_id = recipe_id;
+    cookedFood.quantity = quantity;
 
     if (req.file) {
       // Delete the existing image from Cloudinary
