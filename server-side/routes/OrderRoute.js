@@ -114,7 +114,7 @@ orderRouter.get("/orders/:id", async (req, res) => {
       include: [
         {
           model: OrderItems,
-          include: [CookedFood],
+          // include: [CookedFood],
         },
       ],
     });

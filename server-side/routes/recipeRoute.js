@@ -1,9 +1,11 @@
 const express = require("express");
 const recipeRouter = express.Router();
 const { Recipe, Products, Ingredients, CookedFood } = require("../models");
-const { Op } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 const multerUpload = require("../middleware/multer");
 const cloudinary = require("../config/cloudinary");
+const { sendNotification } = require("../services/notifications");
+// const { sendNotification } = require("../services/notification");
 
 //-----------------------------RECIPE ROUTE-----------------------
 
@@ -325,19 +327,84 @@ recipeRouter.get('/cookedFood', async (req, res) => {
   }
 });
 //get notification if the product quantity less 10
+// recipeRouter.get('/cookedfood/low-quantity', async (req, res) => {
+//   try {
+//     const lowQuantityProducts = await CookedFood.findAll({
+//       where: {
+//         quantity: {
+//           [Op.lt]: 20 // Example threshold for low quantity
+//         }
+//       }
+//     });
+//     res.json(lowQuantityProducts);
+//   } catch (error) {
+//     console.error('Error fetching low quantity products:', error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// });
+
 recipeRouter.get('/cookedfood/low-quantity', async (req, res) => {
   try {
-    const lowQuantityProducts = await CookedFood.findAll({
+    const lowQuantityFoods = await CookedFood.findAll({
       where: {
         quantity: {
-          [Op.lt]: 200 // Example threshold for low quantity
+          [Sequelize.Op.lte]: 10
         }
       }
     });
-    res.json(lowQuantityProducts);
+
+    // Send SSE notification to clients
+    lowQuantityFoods.forEach(food => {
+      sendNotification('low_quantity_food', { foodId: food.id });
+    });
+
+    res.json(lowQuantityFoods);
   } catch (error) {
-    console.error('Error fetching low quantity products:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+recipeRouter.put('/:foodId/approve', async (req, res) => {
+  const { foodId } = req.params;
+
+  try {
+    const food = await CookedFood.findByPk(foodId);
+    if (!food) {
+      return res.status(404).json({ success: false, message: 'Food not found' });
+    }
+
+    // Update food status to approved
+    food.status = 'approved';
+    await food.save();
+
+    // Send SSE notification to clients
+    sendNotification('approve_cooking', { foodId });
+
+    res.json({ success: true, food });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+recipeRouter.put('/:foodId/dismiss', async (req, res) => {
+  const { foodId } = req.params;
+
+  try {
+    const food = await CookedFood.findByPk(foodId);
+    if (!food) {
+      return res.status(404).json({ success: false, message: 'Food not found' });
+    }
+
+    // Update food status to dismissed
+    food.status = 'dismissed';
+    await food.save();
+
+    res.json({ success: true, food });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 });
 //get a cooked food
@@ -449,6 +516,66 @@ recipeRouter.put('/cookedFood/:id',multerUpload.single("image"), async (req, res
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+// recipeRouter.patch("/cookedFood/:productId", async (req, res) => {
+//   try {
+//     const productId = req.params.productId;
+//     const { newStock } = req.body;
+
+//     // Validate that productId is a positive integer
+//     if (!productId || isNaN(productId) || productId <= 0) {
+//       return res.status(400).json({ message: "Invalid productId" });
+//     }
+
+//     // Validate that newStock is a non-negative integer
+//     if (isNaN(newStock) || newStock < 0) {
+//       return res.status(400).json({ message: "Invalid newStock value" });
+//     }
+
+//     // Find the product by its ID
+//     const product = await CookedFood.findByPk(productId);
+//     if (!product) {
+//       return res.status(404).json({ message: "Product not found" });
+//     }
+
+//     // Update the stock of the product
+//     await CookedFood.update(
+//       { quantity: newStock },
+//       { where: { id: productId } }
+//     );
+
+//     // If the product has a recipe ID, reduce the stock of its ingredients
+//     if (product.recipeId) {
+//       const recipe = await Recipe.findByPk(product.recipeId);
+//       if (!recipe) {
+//         return res.status(404).json({ message: "Recipe not found" });
+//       }
+
+//       const recipeIngredients = await RecipeIngredients.findAll({
+//         where: { recipeId: product.recipeId }
+//       });
+
+//       for (const recipeIngredient of recipeIngredients) {
+//         const ingredientProduct = await CookedFood.findByPk(recipeIngredient.productId);
+//         if (ingredientProduct) {
+//           await CookedFood.update(
+//             { quantity: ingredientProduct.quantity - (recipeIngredient.quantity * newStock) },
+//             { where: { id: recipeIngredient.productId } }
+//           );
+//         }
+//       }
+//     }
+
+//     const updatedProduct = await CookedFood.findByPk(productId);
+//     res.json(updatedProduct);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({
+//       message: "Error updating product stock",
+//       error: error.message,
+//     });
+//   }
+// });
 
 
 

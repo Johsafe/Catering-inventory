@@ -97,7 +97,7 @@ productRouter.get('/product/low-quantity', async (req, res) => {
     const lowQuantityProducts = await Products.findAll({
       where: {
         inStock: {
-          [Op.lt]: 7500 // Example threshold for low quantity
+          [Op.lt]: 20 // Example threshold for low quantity
         }
       }
     });
