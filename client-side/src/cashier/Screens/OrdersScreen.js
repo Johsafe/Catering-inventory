@@ -41,26 +41,6 @@ import SideBar from "../../Utils/CashierSideBar";
 import QRCode from "react-qr-code";
 // import moment from "moment";
 
-function RowMenu({ order }) {
-  return (
-    <Dropdown>
-      <MenuButton
-        slots={{ root: IconButton }}
-        slotProps={{ root: { variant: "plain", color: "neutral", size: "sm" } }}
-      >
-        <MoreHorizRoundedIcon />
-      </MenuButton>
-      <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem>
-          <Link to={`/${order.id}/orders/mark`}>View</Link>
-        </MenuItem>
-        <Divider />
-        <MenuItem color="danger">Delete</MenuItem>
-      </Menu>
-    </Dropdown>
-  );
-}
-
 export default function CashierOrdersScreen() {
   const [open, setOpen] = React.useState(false);
   const [paid, setPaid] = React.useState([]);
@@ -474,7 +454,7 @@ export default function CashierOrdersScreen() {
                         <Link level="body-xs" component="button" onClick={() => generateAndPrintInvoice(order.id)}>
                           Download
                         </Link>
-                        <RowMenu order={order} />
+                        <Link to={`/${order.id}/orders/mark`}>View</Link>
                       </Box>
                     </td>
                   </tr>

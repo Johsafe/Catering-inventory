@@ -33,6 +33,7 @@ import { base_url, getError } from "../../Utils/Utils";
 import { toast } from "react-toastify";
 import SideBar from "../../Utils/AdminSideBar";
 import axios from "axios";
+import EditQuantityModal from "./EditFoodQuantity";
 
 export default function Notifications() {
   const [open, setOpen] = React.useState(false);
@@ -41,13 +42,16 @@ export default function Notifications() {
   React.useEffect(() => {
     fetchLowQuantity();
 
-     // Set up SSE connection
-     const eventSource = new EventSource('/sse');
-     eventSource.addEventListener('low_quantity_food', handleLowQuantityFoodNotification);
- 
-     return () => {
-       eventSource.close();
-     };
+    // Set up SSE connection
+    const eventSource = new EventSource("/sse");
+    eventSource.addEventListener(
+      "low_quantity_food",
+      handleLowQuantityFoodNotification
+    );
+
+    return () => {
+      eventSource.close();
+    };
   }, []);
 
   const handleLowQuantityFoodNotification = (event) => {
@@ -70,7 +74,7 @@ export default function Notifications() {
     try {
       await axios.put(`${base_url}recipe/${foodId}/approve`);
       fetchLowQuantity();
-      console.log("approved")
+      console.log("approved");
     } catch (error) {
       console.error("Error approving cooking:", error);
     }
@@ -80,7 +84,7 @@ export default function Notifications() {
     try {
       await axios.put(`${base_url}recipe/${foodId}/dismiss`);
       fetchLowQuantity();
-      console.log("dismissed")
+      console.log("dismissed");
     } catch (error) {
       console.error("Error dismissing cooking:", error);
     }
@@ -333,24 +337,7 @@ export default function Notifications() {
                         </td>
 
                         <td>
-                        <Stack direction="row" spacing={1}>
-                          <IconButton
-                              aria-label="approve"
-                              color="success"
-                            >
-                              <CheckCircleOutlineIcon
-                                onClick={() => approveCooking(product.id)}
-                              />
-                            </IconButton>
-                            <IconButton
-                              aria-label="dissmis"
-                              color="danger"
-                            >
-                              <HighlightOffIcon
-                                onClick={() => dismissCooking(product.id)}
-                              />
-                            </IconButton>
-                            </Stack>
+                          <EditQuantityModal food={product} />
                         </td>
                       </tr>
                     ))
@@ -393,7 +380,9 @@ export default function Notifications() {
                           </Box>
                         </td>
                         <td>
-                        <div>
+                          <EditQuantityModal food={product} />
+                        </td>
+                        {/* <div>
                             <ButtonGroup
                               variant="text"
                               aria-label="text button group"
@@ -403,7 +392,7 @@ export default function Notifications() {
                               <Button  color="danger" onClick={() => dismissCooking(product.id)}>Dismiss</Button>
                             </ButtonGroup>
                           </div>
-                        </td>
+                        </td> */}
                       </tr>
                     ))}
               </tbody>

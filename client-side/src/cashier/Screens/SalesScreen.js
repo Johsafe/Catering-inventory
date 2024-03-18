@@ -337,15 +337,6 @@ export default function CashierSalesScreen() {
             <Typography level="h2" component="h1">
               Create Order
             </Typography>
-            {/* <Link to="/recipe">
-              <Button
-                color="primary"
-                // startDecorator={<AddIcon />}
-                size="sm"
-              >
-                Back to Re
-              </Button>
-            </Link> */}
           </Box>
 
           {/* form */}
@@ -380,27 +371,12 @@ export default function CashierSalesScreen() {
                           />
                         </FormControl>
                       </Stack>
-
-                      {/* <Stack spacing={2} sx={{ my: 1 }}>
-                      <FormLabel> Recipe Description</FormLabel>
-                      <Textarea
-                        size="sm"
-                        minRows={4}
-                        sx={{ mt: 1.5 }}
-                        placeholder="Write a description about the Recipe."
-                        value={description}
-                        required
-                        onChange={(e) => setDescription(e.target.value)}
-                      />
-                    </Stack> */}
-                      {/* <Stack spacing={2} alignItems="flex-start"> */}
                       <FormControl
                         size="sm"
                         style={{ zIndex: 100, flexGrow: 1 }}
                       >
                         <FormLabel>Select Product</FormLabel>
                         <Select
-                          // sx={{ flexGrow: 1 }}
                           isMulti
                           value={products}
                           onChange={handleVegChange}
@@ -409,8 +385,6 @@ export default function CashierSalesScreen() {
                       </FormControl>
                     </div>
                   </Stack>
-
-                  {/* </Stack> */}
                 </Stack>
                 <Sheet
                   className="OrderTableContainer"
@@ -425,18 +399,6 @@ export default function CashierSalesScreen() {
                   }}
                 >
                   <Table
-                    // aria-labelledby="tableTitle"
-                    // stickyHeader
-                    // hoverRow
-                    // sx={{
-                    //   "--TableCell-headBackground":
-                    //     "var(--joy-palette-background-level1)",
-                    //   "--Table-headerUnderlineThickness": "1px",
-                    //   "--TableRow-hoverBackground":
-                    //     "var(--joy-palette-background-level1)",
-                    //   "--TableCell-paddingY": "4px",
-                    //   "--TableCell-paddingX": "8px",
-                    // }}
                   >
                     <thead>
                       <tr>
@@ -472,17 +434,6 @@ export default function CashierSalesScreen() {
                           <tr key={index}>
                             <td>{veg.label}</td>
                             <td>Ksh. {veg.price}</td>
-                            {/* <td>
-                              <Input
-                                type="number"
-                                value={veg.quantity}
-                                onChange={(e) =>
-                                  handleQuantityChange(index, e.target.value.replace(/[^0-9]/g, ''))
-                                }
-                                // onChange={handleInputChange}
-                                defaultValue="1"
-                              />
-                            </td> */}
                             <td>
                               <Input
                                 type="number"

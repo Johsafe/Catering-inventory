@@ -207,14 +207,30 @@ export default function AddRecipe() {
                         }}
                       >
                         <b>Quantity for {veg.label}:</b>
-                        <Input
+                        {/* <Input
                           type="number"
                           value={veg.quantity}
                           onChange={(e) =>
                             handleQuantityChange(index, e.target.value)
                           }
                           sx={{ width: "400px" }}
-                        />
+                        /> */}
+                        <Input
+                                type="number"
+                                value={veg.quantity}
+                                onChange={(e) => {
+                                  const inputValue = e.target.value.replace(
+                                    /[^0-9]/g,
+                                    ""
+                                  ); // Remove non-numeric characters
+                                  const numericValue = parseInt(inputValue, 10); // Convert string to number
+                                  if (numericValue >= 1) {
+                                    // Only update quantity if it's a non-negative number
+                                    handleQuantityChange(index, numericValue);
+                                  }
+                                }}
+                                defaultValue="1"
+                              />
                       </div>
                     ))}
                   </Stack>

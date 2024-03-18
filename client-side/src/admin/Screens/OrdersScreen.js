@@ -1,7 +1,6 @@
 import * as React from "react";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
-import Chip from "@mui/joy/Chip";
 import Divider from "@mui/joy/Divider";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
@@ -15,19 +14,16 @@ import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
 import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
 import Typography from "@mui/joy/Typography";
-import Menu from "@mui/joy/Menu";
-import MenuButton from "@mui/joy/MenuButton";
-import MenuItem from "@mui/joy/MenuItem";
-import Dropdown from "@mui/joy/Dropdown";
+import EditIcon from "@mui/icons-material/Edit";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import DeleteForever from "@mui/icons-material/DeleteForever";
 import Breadcrumbs from "@mui/joy/Breadcrumbs";
+
 
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SearchIcon from "@mui/icons-material/Search";
-import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
-import AutorenewRoundedIcon from "@mui/icons-material/AutorenewRounded";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
@@ -39,26 +35,26 @@ import { base_url, getError } from "../../Utils/Utils";
 import { toast } from "react-toastify";
 import SideBar from "../../Utils/AdminSideBar";
 
-function RowMenu({ order }) {
-  return (
-    <Dropdown>
-      <MenuButton
-        slots={{ root: IconButton }}
-        slotProps={{ root: { variant: "plain", color: "neutral", size: "sm" } }}
-      >
-        <MoreHorizRoundedIcon />
-      </MenuButton>
-      <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem>Edit</MenuItem>
-        <MenuItem>
-          <Link to={`/admin-dashboard/${order.id}/orders/mark`}>View</Link>
-        </MenuItem>
-        <Divider />
-        <MenuItem color="danger">Delete</MenuItem>
-      </Menu>
-    </Dropdown>
-  );
-}
+// function RowMenu({ order,deleteOrder }) {
+//   return (
+//     <Dropdown>
+//       <MenuButton
+//         slots={{ root: IconButton }}
+//         slotProps={{ root: { variant: "plain", color: "neutral", size: "sm" } }}
+//       >
+//         <MoreHorizRoundedIcon />
+//       </MenuButton>
+//       <Menu size="sm" sx={{ minWidth: 140 }}>
+//         <MenuItem>Edit</MenuItem>
+//         <MenuItem>
+//           <Link to={`/admin-dashboard/${order.id}/orders/mark`}>View</Link>
+//         </MenuItem>
+//         <Divider />
+//         <MenuItem color="danger" onClick={() => deleteOrder(order.id)}>Delete</MenuItem>
+//       </Menu>
+//     </Dropdown>
+//   );
+// }
 
 export default function OrdersScreen() {
   const [open, setOpen] = React.useState(false);
@@ -89,6 +85,19 @@ export default function OrdersScreen() {
     };
     fetchOrder();
   }, []);
+  //  //delete order
+   async function deleteOrder(id) {
+    try {
+      await fetch(`${base_url}order/order/${id}`, {
+        method: "DELETE",
+      });
+      setOrders(orders.filter((order) => order.id !== id));
+      toast.success("Order deleted successfully");
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  }
+
   // filter by Status
   function filterStatus(value) {
     if (value === "All") {
@@ -336,7 +345,24 @@ export default function OrdersScreen() {
                         <Link level="body-xs" component="button">
                           Download
                         </Link>
-                        <RowMenu order={order} />
+                        {/* <RowMenu order={order} deleteOrder={deleteOrder(order.id)} /> */}
+                          <div>
+                            <ButtonGroup
+                              variant="text"
+                              aria-label="text button group"
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              {/* <Link to={`/admin-dashboard/${order.id}/edit`}>
+                                <EditIcon style={{ color: "blue" }} />
+                              </Link> */}
+                              <Button
+                                onClick={() => deleteOrder(order.id)}
+                                style={{ background: "none" }}
+                              >
+                                <DeleteForever sx={{ color: "red" }} />
+                              </Button>
+                            </ButtonGroup>
+                          </div>
                       </Box>
                     </td>
                   </tr>

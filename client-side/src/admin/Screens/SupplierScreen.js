@@ -31,8 +31,6 @@ import { base_url, getError } from "../../Utils/Utils";
 import { toast } from "react-toastify";
 import SideBar from "../../Utils/AdminSideBar";
 
-// import { DeleteForever } from "@mui/icons-material";
-
 export default function SupplierScreen() {
   const [open, setOpen] = React.useState(false);
   const [suppliers, setSuppliers] = React.useState([]);
@@ -57,7 +55,7 @@ export default function SupplierScreen() {
       await fetch(`${base_url}vendor/vendor/${id}`, {
         method: "DELETE",
       });
-      setSuppliers(suppliers.filter((supplier) => supplier._id !== id));
+      setSuppliers(suppliers.filter((supplier) => supplier.id !== id));
       toast.success("Supplier deleted successfully");
     } catch (err) {
       toast.error(getError(err));
