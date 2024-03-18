@@ -20,8 +20,9 @@ import Avatar from "react-avatar";
 import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
 import Button from "@mui/joy/Button";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import DeleteIcon from "@mui/icons-material/Delete";
+import DeleteForever from "@mui/icons-material/DeleteForever";
+import QRCode from "react-qr-code";
+import moment from "moment";
 
 export default function CashierSalesScreen() {
   //post data
@@ -33,26 +34,176 @@ export default function CashierSalesScreen() {
   const [selectedPay, setSelectedPay] = React.useState(null);
   // const [quantity, setQuantity] = React.useState(1);
 
-  // const generateAndPrintInvoice = () => {
-  //   // Prepare invoice data here (customer details, products, total amount, etc.)
-  //   const invoiceData = {
-  //     customer,
-  //     products,
-  //     paymentMethod,
-  //     // other necessary details...
-  //   };
+  // const [orderId, setOrderId] = React.useState("");
+  // const [dateCreated, setDateCreated] = React.useState("");
+  // const [totalPrice, setTotalPrice] = React.useState(0);
+  // // const [cashierName, setCashierName] = React.useState("");
 
-  //   // Open print dialog
-  //   setTimeout(() => {
-  //     window.print();
-  //   }, 500);
-
-  //   // For demonstration purposes, log the invoice data
-  //   console.log("Invoice Data:", invoiceData);
+  // // Function to generate QR code
+  // const generateQRCode = (text) => {
+  //   return (
+  //     <div style={{ textAlign: "center" }}>
+  //       <QRCode value={text} size={128} />
+  //     </div>
+  //   );
+  // };
+  // // {`${orderId} ${dateCreated} ${customer}`} 
+  
+  
+  // // Function to fetch order details from the backend
+  // const fetchOrderDetails = async () => {
+  //   try {
+  //     const response = await fetch(`${base_url}order/orders`);
+  //     const data = await response.json();
+  //     setOrderId(data.order_no);
+  //     setDateCreated(data.createdAt);
+  //     setTotalPrice(data.total);
+  //     // setCashierName(data.cashierName);
+  //     // You might also want to set other state variables such as customer and products if they are fetched from the backend
+  //   } catch (error) {
+  //     console.error("Error fetching order details:", error);
+  //   }
   // };
 
-  //add to cart
-  function addToCart() {}
+  // React.useEffect(() => {
+  //   fetchOrderDetails();
+  // }, []);
+
+  // // Function to generate and print the invoice
+  // const generateAndPrintInvoice = () => {
+  //   // Restaurant details
+  //   const restaurantName = "Asgard Catering";
+  //   const restaurantTel = "123-456-7890";
+  //   const restaurantEmail = "asgardcatering@example.com";
+
+  //   // Sale details
+  //   let cashierName = localStorage.getItem("username");
+  //   const saleDetails = `
+  //     Customer: ${customer}
+  //     Cashier Name: ${cashierName}
+  //     Date: ${moment(dateCreated).format("ll")}
+  //     Order ID: ${orderId}
+  //     Total Price: ${totalPrice}
+  //   `;
+
+  //   // Payment method
+  //   const paymentDetails = `Payment Method: ${paymentMethod}`;
+
+  //   // Table with purchased items
+  //   const itemsTable = products.map((item, index) => (
+  //     <tr key={index}>
+  //       <td>{item.name}</td>
+  //       <td>{item.price}</td>
+  //     </tr>
+  //   ));
+
+  
+  //   // Invoice template
+  //   const invoiceTemplate = `
+  //     <html>
+  //       <head>
+  //         <title>Invoice</title>
+  //         <style>
+  //           /* Add your CSS styles here */
+  //           body {
+  //             font-family: Arial, sans-serif;
+  //           }
+  //           table {
+  //             width: 100%;
+  //             border-collapse: collapse;
+  //           }
+  //           table td, table th {
+  //             padding: 8px;
+  //             text-align: left;
+  //           }
+  //           table th {
+  //             background-color: #f2f2f2;
+  //           }
+  //         </style>
+  //       </head>
+  //       <body>
+  //         <h1>${restaurantName}</h1>
+  //         <p>Tel: ${restaurantTel}</p>
+  //         <p>Email: ${restaurantEmail}</p>
+  //         <h2>Sale Invoice</h2>
+  //         <p>${saleDetails}</p>
+  //         <table>
+  //           <thead>
+  //             <tr>
+  //               <th>Item</th>
+  //               <th>Price</th>
+  //             </tr>
+  //           </thead>
+  //           <tbody>
+  //             ${itemsTable.join("")}
+  //           </tbody>
+  //         </table>
+  //         <p>${paymentDetails}</p>
+  //         <div>
+  //           ${generateQRCode(orderId,customer,dateCreated)}
+  //         </div>
+  //         <p>&copy; ${new Date().getFullYear()} Asgard Catering. All rights reserved.</p>
+  //       </body>
+  //     </html>
+  //   `;
+
+  //   // Create a new window and write the invoice template to it
+  //   const invoiceWindow = window.open("", "_blank");
+  //   invoiceWindow.document.write(invoiceTemplate);
+
+  //   // Close the invoice window after printing
+  //   setTimeout(() => {
+  //     invoiceWindow.print();
+  //     invoiceWindow.close();
+  //   }, 100);
+  //   // console.log("Invoice Data:", invoiceData);
+  // };
+//  // Function to prepare and print the invoice
+//  const generateAndPrintInvoice = () => {
+//   // Prepare invoice data here (customer details, products, total amount, etc.)
+//   const product = products.map((option) => ({
+//     CookedFoodId: option.value,
+//     quantity: option.quantity,
+//   }));
+//   const invoiceData = {
+//     customer,
+//     product,
+//     paymentMethod,
+//   };
+
+//   // Create HTML template for the invoice
+//   const invoiceTemplate = `
+//   <html>
+//     <head>
+//       <title>Invoice</title>
+//       <!-- Add your CSS styles here -->
+//       <style>
+//         /* CSS styles for the invoice */
+//       </style>
+//     </head>
+//     <body>
+//       <h1>Invoice</h1>
+//       <!-- Populate the invoice data dynamically -->
+//       <p>Customer: ${invoiceData.customer}</p>
+//       <p>Payment Method: ${invoiceData.paymentMethod}</p>
+//       <!-- Add more invoice details here as needed -->
+//     </body>
+//   </html>
+// `;
+
+//    // Create a new window and write the invoice template to it
+//    const invoiceWindow = window.open("", "_blank");
+//    invoiceWindow.document.write(invoiceTemplate);
+
+//    // Close the invoice window after printing
+//    setTimeout(() => {
+//      invoiceWindow.print();
+//      invoiceWindow.close();
+//    }, 100);
+
+//   // For demonstration purposes, log the invoice data
+//   console.log("Invoice Data:", invoiceData);
+// };
 
   function removeItemFromCart(index) {
     const updatedCartItems = products.filter((_, i) => i !== index);
@@ -64,7 +215,7 @@ export default function CashierSalesScreen() {
       const fetched = await fetch(`${base_url}recipe/cookedFood`);
       const jsonData = await fetched.json();
       setPrdOptions(jsonData);
-      setProducts(jsonData);
+      // setProducts(jsonData);
     } catch (err) {
       toast.error(getError(err));
     }
@@ -117,13 +268,14 @@ export default function CashierSalesScreen() {
       });
       console.log(formData);
       console.log("Form submitted successfully", response);
-      // navigate("/recipe");
+      navigate("/cashier-dashboard/orders");
     } catch (error) {
       console.error("Error submitting form", error);
     }
   };
 
-  const Options = prdOptions.map((item) => ({
+  const availableProducts = prdOptions.filter(product => product.quantity > 0);
+  const Options = availableProducts.map((item) => ({
     value: item.id,
     label: item.foodName,
     image: item.image,
@@ -248,7 +400,7 @@ export default function CashierSalesScreen() {
                       >
                         <FormLabel>Select Product</FormLabel>
                         <Select
-                          sx={{ flexGrow: 1 }}
+                          // sx={{ flexGrow: 1 }}
                           isMulti
                           value={products}
                           onChange={handleVegChange}
@@ -273,18 +425,18 @@ export default function CashierSalesScreen() {
                   }}
                 >
                   <Table
-                    aria-labelledby="tableTitle"
-                    stickyHeader
-                    hoverRow
-                    sx={{
-                      "--TableCell-headBackground":
-                        "var(--joy-palette-background-level1)",
-                      "--Table-headerUnderlineThickness": "1px",
-                      "--TableRow-hoverBackground":
-                        "var(--joy-palette-background-level1)",
-                      "--TableCell-paddingY": "4px",
-                      "--TableCell-paddingX": "8px",
-                    }}
+                    // aria-labelledby="tableTitle"
+                    // stickyHeader
+                    // hoverRow
+                    // sx={{
+                    //   "--TableCell-headBackground":
+                    //     "var(--joy-palette-background-level1)",
+                    //   "--Table-headerUnderlineThickness": "1px",
+                    //   "--TableRow-hoverBackground":
+                    //     "var(--joy-palette-background-level1)",
+                    //   "--TableCell-paddingY": "4px",
+                    //   "--TableCell-paddingX": "8px",
+                    // }}
                   >
                     <thead>
                       <tr>
@@ -302,10 +454,10 @@ export default function CashierSalesScreen() {
                         <th style={{ width: 240, padding: "12px 6px" }}>
                           Product
                         </th>
-                        <th style={{ width: 240, padding: "12px 6px" }}>
+                        <th style={{ width: 140, padding: "12px 6px" }}>
                           Total
                         </th>
-                        <th style={{ width: 240, padding: "12px 6px" }}>
+                        <th style={{ width: 140, padding: "12px 6px" }}>
                           Remove
                         </th>
                       </tr>
@@ -341,7 +493,7 @@ export default function CashierSalesScreen() {
                                     ""
                                   ); // Remove non-numeric characters
                                   const numericValue = parseInt(inputValue, 10); // Convert string to number
-                                  if (numericValue >= 0) {
+                                  if (numericValue >= 1) {
                                     // Only update quantity if it's a non-negative number
                                     handleQuantityChange(index, numericValue);
                                   }
@@ -395,7 +547,7 @@ export default function CashierSalesScreen() {
                                 // startIcon={<DeleteIcon />}
                                 onClick={() => removeItemFromCart(index)}
                               >
-                                Remove
+                                <DeleteForever sx={{ color: "red" }}/>
                               </Button>
                             </td>
                           </tr>

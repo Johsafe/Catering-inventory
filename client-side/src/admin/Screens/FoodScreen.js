@@ -364,12 +364,21 @@ export default function FoodScreen() {
                               <Typography level="body-xs">
                                 {product.foodName}
                               </Typography>
-                              <Typography
-                                level="body-xs"
-                                sx={{ color: "green" }}
-                              >
-                                Available
-                              </Typography>
+                              {product.quantity === 0 ? (
+                                <Typography
+                                  level="body-xs"
+                                  sx={{ color: "red" }}
+                                >
+                                  Out Of Stock
+                                </Typography>
+                              ) : (
+                                <Typography
+                                  level="body-xs"
+                                  sx={{ color: "green" }}
+                                >
+                                  Available
+                                </Typography>
+                              )}
                             </div>
                           </Box>
                         </td>
@@ -406,12 +415,21 @@ export default function FoodScreen() {
                               <Typography level="body-xs">
                                 {product.foodName}
                               </Typography>
-                              <Typography
-                                level="body-xs"
-                                sx={{ color: "green" }}
-                              >
-                                Available
-                              </Typography>
+                              {product.quantity === 0 ? (
+                                <Typography
+                                  level="body-xs"
+                                  sx={{ color: "red" }}
+                                >
+                                  Out Of Stock
+                                </Typography>
+                              ) : (
+                                <Typography
+                                  level="body-xs"
+                                  sx={{ color: "green" }}
+                                >
+                                  Available
+                                </Typography>
+                              )}
                             </div>
                           </Box>
                         </td>

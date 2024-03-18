@@ -219,7 +219,7 @@ export default function SupplierScreen() {
                 onChange={(e) => searchHandler(e.target.value)}
               />
             </FormControl>
-            {renderFilters()}
+            {/* {renderFilters()} */}
           </Box>
           <Sheet
             className="OrderTableContainer"

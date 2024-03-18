@@ -17,6 +17,8 @@ import Breadcrumbs from "@mui/joy/Breadcrumbs";
 import EditIcon from "@mui/icons-material/Edit";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SearchIcon from "@mui/icons-material/Search";
@@ -26,29 +28,63 @@ import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
-import { Container } from "@mui/material";
+import { Container, Stack } from "@mui/material";
 import { base_url, getError } from "../../Utils/Utils";
 import { toast } from "react-toastify";
 import SideBar from "../../Utils/AdminSideBar";
+import axios from "axios";
 
 export default function Notifications() {
   const [open, setOpen] = React.useState(false);
   const [lowQuantityProducts, setLowQuantityProducts] = React.useState([]);
 
   React.useEffect(() => {
-    const fetchLowQuantity = async () => {
-      try {
-        const fetched = await fetch(
-          `${base_url}recipe/cookedfood/low-quantity`
-        );
-        const jsonData = await fetched.json();
-        setLowQuantityProducts(jsonData);
-      } catch (err) {
-        toast.error(getError(err));
-      }
-    };
     fetchLowQuantity();
+
+     // Set up SSE connection
+     const eventSource = new EventSource('/sse');
+     eventSource.addEventListener('low_quantity_food', handleLowQuantityFoodNotification);
+ 
+     return () => {
+       eventSource.close();
+     };
   }, []);
+
+  const handleLowQuantityFoodNotification = (event) => {
+    const data = JSON.parse(event.data);
+    // Update low quantity foods
+    fetchLowQuantity();
+  };
+
+  const fetchLowQuantity = async () => {
+    try {
+      const fetched = await fetch(`${base_url}recipe/cookedfood/low-quantity`);
+      const jsonData = await fetched.json();
+      setLowQuantityProducts(jsonData);
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  };
+
+  const approveCooking = async (foodId) => {
+    try {
+      await axios.put(`${base_url}recipe/${foodId}/approve`);
+      fetchLowQuantity();
+      console.log("approved")
+    } catch (error) {
+      console.error("Error approving cooking:", error);
+    }
+  };
+
+  const dismissCooking = async (foodId) => {
+    try {
+      await axios.put(`${base_url}recipe/${foodId}/dismiss`);
+      fetchLowQuantity();
+      console.log("dismissed")
+    } catch (error) {
+      console.error("Error dismissing cooking:", error);
+    }
+  };
 
   //search by title
   const [search, setSearch] = React.useState("");
@@ -295,23 +331,27 @@ export default function Notifications() {
                             </div>
                           </Box>
                         </td>
-                        <td style={{ color: "red" }}>
-                          <p>Please add more quantity to this product.</p>
-                        </td>
-                        {/* <td>
-                          <div>
-                            <ButtonGroup
-                              variant="text"
-                              aria-label="text button group"
-                              style={{ display: "flex", alignItems: "center" }}
+
+                        <td>
+                        <Stack direction="row" spacing={1}>
+                          <IconButton
+                              aria-label="approve"
+                              color="success"
                             >
-                              <Link to={`/${product.id}/edit`}>
-                                <EditIcon style={{ color: "blue" }} />
-                              </Link>
-                              <DeleteProductModel product={product} />
-                            </ButtonGroup>
-                          </div>
-                        </td> */}
+                              <CheckCircleOutlineIcon
+                                onClick={() => approveCooking(product.id)}
+                              />
+                            </IconButton>
+                            <IconButton
+                              aria-label="dissmis"
+                              color="danger"
+                            >
+                              <HighlightOffIcon
+                                onClick={() => dismissCooking(product.id)}
+                              />
+                            </IconButton>
+                            </Stack>
+                        </td>
                       </tr>
                     ))
                   : lowQuantityProducts.map((product) => (
@@ -352,23 +392,18 @@ export default function Notifications() {
                             </div>
                           </Box>
                         </td>
-                        <td style={{ color: "red" }}>
-                          <p>Please add more quantity to this product.</p>
+                        <td>
+                        <div>
+                            <ButtonGroup
+                              variant="text"
+                              aria-label="text button group"
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <Button  color="success"  onClick={() => approveCooking(product.id)}>Approve</Button>
+                              <Button  color="danger" onClick={() => dismissCooking(product.id)}>Dismiss</Button>
+                            </ButtonGroup>
+                          </div>
                         </td>
-                        {/* <td>
-                      <div>
-                        <ButtonGroup
-                          variant="text"
-                          aria-label="text button group"
-                          style={{ display: "flex", alignItems: "center" }}
-                        >
-                          <Link to={`/${product.id}/edit`}>
-                            <EditIcon style={{ color: "blue" }} />
-                          </Link>
-                          <DeleteProductModel product={product} />
-                        </ButtonGroup>
-                      </div>
-                    </td> */}
                       </tr>
                     ))}
               </tbody>

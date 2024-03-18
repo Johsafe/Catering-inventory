@@ -20,8 +20,8 @@ import FileUploadRoundedIcon from "@mui/icons-material/FileUploadRounded";
 import { useNavigate } from "react-router-dom";
 import { Container } from "@mui/material";
 import { toast } from "react-toastify";
-import { base_url, getError } from "../../Utils/Utils";
 import SideBar from "../../Utils/AdminSideBar";
+import { base_url, getError } from "../../Utils/Utils";
 
 export default function AddProduct() {
   //image
@@ -61,12 +61,12 @@ export default function AddProduct() {
     data.append("supplierId", supplierId.value);
 
     try {
-      const response = await fetch(`${base_url}product/create`, {
+      const prdct = await fetch(`${base_url}product/create`, {
         method: "POST",
         body: data,
       });
-      // navigate("/admin-dashboard/product");
-      console.log(response);
+      navigate("/admin-dashboard/product");
+      console.log(prdct);
       toast.success("Product added successfully");
     } catch (err) {
       toast.error(getError(err));

@@ -15,6 +15,10 @@ import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import Container from "@mui/material/Container";
 import SideBar from "../../Utils/CashierSideBar";
+import { base_url, getError } from "../../Utils/Utils";
+import { toast } from "react-toastify";
+import PolarAreaChart from "./PolarAreaChart";
+import BarChart from "./BarChart";
 // import { Card } from "@mui/material";
 // import { Pie } from "react-chartjs-2";
 
@@ -27,71 +31,107 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }));
 
 export default function CashierDashboardScreen() {
-  // const [productCount, setProductCount] = React.useState([]);
-  // const [orderCount, setOrderCount] = React.useState([]);
-  // const [OutofStockCount, setOutofStockCount] = React.useState([]);
-  // const [totalSales, setTotalSales] = React.useState([]);
-  // const [products, setProducts] = React.useState([]);
 
-  // React.useEffect(() => {
-  //   //get product count
-  //   const fetchproductCount = async () => {
-  //     try {
-  //       const fetched = await fetch(`${base_url}stats/total-product-count`);
-  //       const jsonData = await fetched.json();
-  //       setProductCount(jsonData);
-  //     } catch (err) {
-  //       toast.error(getError(err));
-  //     }
-  //   };
-  //   //get items sold count
-  //   const fetchOrderCount = async () => {
-  //     try {
-  //       const fetched = await fetch(`${base_url}stats/total-sold`);
-  //       const jsonData = await fetched.json();
-  //       setOrderCount(jsonData);
-  //     } catch (err) {
-  //       toast.error(getError(err));
-  //     }
-  //   };
-  //   //get out of stock count
-  //   const fetchOutofStockCount = async () => {
-  //     try {
-  //       const fetched = await fetch(`${base_url}stats/out-of-stock-count`);
-  //       const jsonData = await fetched.json();
-  //       setOutofStockCount(jsonData);
-  //     } catch (err) {
-  //       toast.error(getError(err));
-  //     }
-  //   };
-  //   //get total amount after sales
-  //   const fetchTotalSales = async () => {
-  //     try {
-  //       const fetched = await fetch(`${base_url}stats/total-amount-sold`);
-  //       const jsonData = await fetched.json();
-  //       setTotalSales(jsonData);
-  //     } catch (err) {
-  //       toast.error(getError(err));
-  //     }
-  //   };
+  const [productCount, setProductCount] = React.useState([]);
+  const [orderCount, setOrderCount] = React.useState([]);
+  const [OutofStockCount, setOutofStockCount] = React.useState([]);
+  const [totalSales, setTotalSales] = React.useState([]);
+  const [products, setProducts] = React.useState([]);
+  const [expiredProducts, setExpiredProducts] = React.useState([]);
+  const [totalTodaysSales,setTotalTodaysSales]= React.useState([]);
+  const [totalTodaysOrders,setTotalTodaysOrders]= React.useState([]);
+  
+  React.useEffect(() => {
+    //get product count
+    const fetchproductCount = async () => {
+      try {
+        const fetched = await fetch(`${base_url}stats/total-product-count`);
+        const jsonData = await fetched.json();
+        setProductCount(jsonData);
+      } catch (err) {
+        toast.error(getError(err));
+      }
+    };
+    //get items sold count
+    const fetchOrderCount = async () => {
+      try {
+        const fetched = await fetch(`${base_url}stats/total-orders`);
+        const jsonData = await fetched.json();
+        setOrderCount(jsonData);
+      } catch (err) {
+        toast.error(getError(err));
+      }
+    };
+    //get out of stock count
+    const fetchOutofStockCount = async () => {
+      try {
+        const fetched = await fetch(`${base_url}stats/out-of-stock-count`);
+        const jsonData = await fetched.json();
+        setOutofStockCount(jsonData);
+      } catch (err) {
+        toast.error(getError(err));
+      }
+    };
+    //get total amount after sales
+    const fetchTotalSales = async () => {
+      try {
+        const fetched = await fetch(`${base_url}stats/total-amount-sold`);
+        const jsonData = await fetched.json();
+        setTotalSales(jsonData);
+      } catch (err) {
+        toast.error(getError(err));
+      }
+    };
 
-  //   //get all ordered items
-  //   const allSoldProducts = async () => {
-  //     try {
-  //       const fetched = await fetch(`${base_url}order/allorders`);
-  //       const jsonData = await fetched.json();
-  //       setProducts(jsonData);
-  //     } catch (err) {
-  //       toast.error(getError(err));
-  //     }
-  //   };
+    //get today total amount after sales
+    const fetchTotalTodaysSales = async () => {
+      try {
+        const fetched = await fetch(`${base_url}stats/today-total-sales`);
+        const jsonData = await fetched.json();
+        setTotalTodaysSales(jsonData);
+      } catch (err) {
+        toast.error(getError(err));
+      }
+    };
+     //get total amount after sales
+     const fetchTotalTodaysOrders = async () => {
+      try {
+        const fetched = await fetch(`${base_url}stats/today-total-orders`);
+        const jsonData = await fetched.json();
+        setTotalTodaysOrders(jsonData);
+      } catch (err) {
+        toast.error(getError(err));
+      }
+    };
+    //Expired products
+    const expiredProducts = async () => {
+      try {
+        const fetched = await fetch(`${base_url}stats/expired-product-count`);
+        const jsonData = await fetched.json();
+        setExpiredProducts(jsonData);
+      } catch (err) {
+        toast.error(getError(err));
+      }
+    };
 
-  //   fetchproductCount();
-  //   fetchOrderCount();
-  //   fetchOutofStockCount();
-  //   fetchTotalSales();
-  //   allSoldProducts();
-  // }, []);
+    //get all product sold
+    const allSoldProducts = async () => {
+      try {
+        const fetched = await fetch(`${base_url}stats/total-products-sold`);
+        const jsonData = await fetched.json();
+        setProducts(jsonData);
+      } catch (err) {
+        toast.error(getError(err));
+      }
+    };
+    fetchTotalTodaysSales();
+    fetchTotalTodaysOrders ();
+    fetchproductCount();
+    fetchOrderCount();
+    fetchOutofStockCount();
+    fetchTotalSales();
+    allSoldProducts();
+  }, []);
 
   return (
     <div style={{ display: "flex" }}>
@@ -158,29 +198,7 @@ export default function CashierDashboardScreen() {
                   </Grid>
                   <Grid item xs>
                     <Typography>Total sales</Typography>
-                    {/* <Typography>Ksh.{totalSales}</Typography> */}
-                  </Grid>
-                </Grid>
-              </StyledPaper>
-            </Box>
-
-            <Box sx={{ flexGrow: 1, overflow: "hidden", px: 3 }}>
-              <StyledPaper
-                sx={{
-                  my: 1,
-                  mx: "auto",
-                  p: 2,
-                }}
-              >
-                <Grid container wrap="nowrap" spacing={2}>
-                  <Grid item>
-                    <Avatar style={{ background: "rgb(236, 224, 167)" }}>
-                      <ShoppingBasketIcon style={{ color: "orange" }} />
-                    </Avatar>
-                  </Grid>
-                  <Grid item xs>
-                    <Typography>Product Sold</Typography>
-                    {/* <Typography>{orderCount}</Typography> */}
+                    <Typography>Ksh.{" "}{totalSales}</Typography>
                   </Grid>
                 </Grid>
               </StyledPaper>
@@ -201,8 +219,30 @@ export default function CashierDashboardScreen() {
                     </Avatar>
                   </Grid>
                   <Grid item xs>
-                    <Typography>Total Product</Typography>
-                    {/* <Typography>{productCount}</Typography> */}
+                    <Typography>Total Invoices</Typography>
+                    <Typography>{orderCount}</Typography>
+                  </Grid>
+                </Grid>
+              </StyledPaper>
+            </Box>
+
+            <Box sx={{ flexGrow: 1, overflow: "hidden", px: 3 }}>
+              <StyledPaper
+                sx={{
+                  my: 1,
+                  mx: "auto",
+                  p: 2,
+                }}
+              >
+                <Grid container wrap="nowrap" spacing={2}>
+                  <Grid item>
+                    <Avatar style={{ background: "rgb(236, 224, 167)" }}>
+                      <ShoppingBasketIcon style={{ color: "orange" }} />
+                    </Avatar>
+                  </Grid>
+                  <Grid item xs>
+                    <Typography>Available Foods</Typography>
+                    <Typography>{productCount}</Typography>
                   </Grid>
                 </Grid>
               </StyledPaper>
@@ -224,29 +264,120 @@ export default function CashierDashboardScreen() {
                   </Grid>
                   <Grid item xs>
                     <Typography>
-                      <Link to="/out-of-stock">Out of stock</Link>
+                      <Link
+                        to="/out-of-stock"
+                        style={{ textDecoration: "none", color: "black" }}
+                      >
+                        Expired
+                      </Link>
                     </Typography>
-                    {/* <Typography>{OutofStockCount}</Typography> */}
+                    {/* <Typography>{expiredProducts}</Typography> */}
                   </Grid>
                 </Grid>
               </StyledPaper>
             </Box>
           </div>
-          {/* <div>
-            <Card>
-              <Pie
-                data={{
-                  labels: products.map((data) => data.title),
-                  datasets: [
-                    {
-                      label: "Sold Items",
-                      data: products.map((data) => data.quantity),
-                    },
-                  ],
+
+          <div style={{ display: "flex", top: "30px", width: "100%" }}>
+            <Box sx={{ flexGrow: 1, overflow: "hidden", px: 3 }}>
+              <StyledPaper
+                sx={{
+                  my: 1,
+                  mx: "auto",
+                  p: 2,
                 }}
-              />
-            </Card>
-          </div> */}
+              >
+                <Grid container wrap="nowrap" spacing={2}>
+                  <Grid item>
+                    <Avatar style={{ background: "rgb(174, 185, 233)" }}>
+                      <PaidIcon style={{ color: "blue" }} />
+                    </Avatar>
+                  </Grid>
+                  <Grid item xs>
+                    <Typography>Today sales</Typography>
+                    <Typography>Ksh.{" "}{totalTodaysSales}</Typography>
+                  </Grid>
+                </Grid>
+              </StyledPaper>
+            </Box>
+
+            <Box sx={{ flexGrow: 1, overflow: "hidden", px: 3 }}>
+              <StyledPaper
+                sx={{
+                  my: 1,
+                  mx: "auto",
+                  p: 2,
+                }}
+              >
+                <Grid container wrap="nowrap" spacing={2}>
+                  <Grid item>
+                    <Avatar style={{ background: " rgb(164, 231, 164)" }}>
+                      <LocalMallIcon style={{ color: "green" }} />
+                    </Avatar>
+                  </Grid>
+                  <Grid item xs>
+                    <Typography>Today Invoice</Typography>
+                    <Typography>{totalTodaysOrders}</Typography>
+                  </Grid>
+                </Grid>
+              </StyledPaper>
+            </Box>
+
+            <Box sx={{ flexGrow: 1, overflow: "hidden", px: 3 }}>
+              <StyledPaper
+                sx={{
+                  my: 1,
+                  mx: "auto",
+                  p: 2,
+                }}
+              >
+                <Grid container wrap="nowrap" spacing={2}>
+                  <Grid item>
+                    <Avatar style={{ background: "rgb(236, 224, 167)" }}>
+                      <ShoppingBasketIcon style={{ color: "orange" }} />
+                    </Avatar>
+                  </Grid>
+                  <Grid item xs>
+                    <Typography>Foods Sold</Typography>
+                    <Typography>{products}</Typography>
+                  </Grid>
+                </Grid>
+              </StyledPaper>
+            </Box>
+
+            <Box sx={{ flexGrow: 1, overflow: "hidden", px: 3 }}>
+              <StyledPaper
+                sx={{
+                  my: 1,
+                  mx: "auto",
+                  p: 2,
+                }}
+              >
+                <Grid container wrap="nowrap" spacing={2}>
+                  <Grid item>
+                    <Avatar style={{ background: "rgb(233, 150, 150)" }}>
+                      <ProductionQuantityLimitsIcon style={{ color: "red" }} />
+                    </Avatar>
+                  </Grid>
+                  <Grid item xs>
+                    <Typography>
+                      <Link
+                        to="/out-of-stock"
+                        style={{ textDecoration: "none", color: "black" }}
+                      >
+                        Out of stock
+                      </Link>
+                    </Typography>
+                    <Typography>{OutofStockCount}</Typography>
+                  </Grid>
+                </Grid>
+              </StyledPaper>
+            </Box>
+          </div>
+          <div style={{display:'flex',marginTop:'40px',gap:'3rem'}}>
+            <PolarAreaChart/>
+            <BarChart/>
+          </div>
         </React.Fragment>
       </Container>
     </div>

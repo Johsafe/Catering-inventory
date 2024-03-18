@@ -28,7 +28,7 @@ export default function CashierSideBar() {
   }
 
   let username = localStorage.getItem("username");
-  let email = localStorage.getItem("email")
+  let email = localStorage.getItem("email");
   function closeSidebar() {
     if (typeof window !== "undefined") {
       document.documentElement.style.removeProperty("--SideNavigation-slideIn");
@@ -131,7 +131,11 @@ export default function CashierSideBar() {
               </ListItemButton>
             </ListItem>
             <ListItem>
-              <ListItemButton role="menuitem" component="a" href="/cashier-dashboard/product">
+              <ListItemButton
+                role="menuitem"
+                component="a"
+                href="/cashier-dashboard/product"
+              >
                 <LocalMallIcon />
                 <ListItemContent>
                   <Typography level="title-sm">Foods</Typography>
@@ -152,7 +156,11 @@ export default function CashierSideBar() {
               </ListItemButton>
             </ListItem>
             <ListItem>
-              <ListItemButton role="menuitem" component="a" href="/cashier-dashboard/orders">
+              <ListItemButton
+                role="menuitem"
+                component="a"
+                href="/cashier-dashboard/orders"
+              >
                 <ShoppingCartRoundedIcon />
                 <ListItemContent>
                   <Typography level="title-sm">Orders</Typography>
@@ -160,20 +168,19 @@ export default function CashierSideBar() {
               </ListItemButton>
             </ListItem>
 
-            <ListItemButton role="menuitem" component="a" href="">
-              {/* /cashier-dashboard/transaction */}
+            {/* <ListItemButton role="menuitem" component="a" href="/cashier-dashboard/transaction">            
               <PaidIcon />
               <ListItemContent>
                 <Typography level="title-sm">Transaction</Typography>
               </ListItemContent>
             </ListItemButton>
-            <ListItemButton role="menuitem" component="a" href="">
-              {/* /cashier-dashboard/report */}
+            <ListItemButton role="menuitem" component="a" href="/cashier-dashboard/report">
+              
               <GroupRoundedIcon />
               <ListItemContent>
                 <Typography level="title-sm">Reports</Typography>
               </ListItemContent>
-            </ListItemButton>
+            </ListItemButton> */}
           </List>
         </Box>
         <Divider />

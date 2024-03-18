@@ -194,7 +194,7 @@ export default function Loginin() {
           </Box>
           <Box component="footer" sx={{ py: 3 }}>
             <Typography level="body-xs" textAlign="center">
-              © Asgard Co. {new Date().getFullYear()}
+              © Johsafe {new Date().getFullYear()}
             </Typography>
           </Box>
         </Box>

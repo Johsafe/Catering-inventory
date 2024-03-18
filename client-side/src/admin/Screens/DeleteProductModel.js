@@ -23,7 +23,7 @@ export default function DeleteProductModel({ product }) {
         // },
       });
       console.log(del);
-      // window.location = "/admin-dashboard/product";
+      window.location = "/admin-dashboard/product";
       toast.success("product deleted successfully");
     } catch (err) {
         toast.error(getError(err));

@@ -34,10 +34,12 @@ import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import moment from "moment";
 import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
-import { Container } from "@mui/material";
+import { Container, stepIconClasses } from "@mui/material";
 import { base_url, getError } from "../../Utils/Utils";
 import { toast } from "react-toastify";
 import SideBar from "../../Utils/CashierSideBar";
+import QRCode from "react-qr-code";
+// import moment from "moment";
 
 function RowMenu({ order }) {
   return (
@@ -65,6 +67,141 @@ export default function CashierOrdersScreen() {
   const [status, setStatus] = React.useState([]);
   const [filteredOrders, setFilteredOrders] = React.useState([]);
 
+  
+  const [orderId, setOrderId] = React.useState("");
+  // const [id, setId] = React.useState("");
+  const [dateCreated, setDateCreated] = React.useState("");
+  const [totalPrice, setTotalPrice] = React.useState(0);
+  const [customer, setCustomer] = React.useState("");
+  const [pos, setPos] = React.useState("");
+  const [products, setProducts] = React.useState([]);
+
+  // Function to generate QR code
+  const generateQRCode = (text) => {
+    return (
+      <div style={{ textAlign: "center" }}>
+        <QRCode value={text} size={128} />
+      </div>
+    );
+  };
+  // {`${orderId} ${dateCreated} ${customer}`} 
+  
+  
+  
+  // Function to generate and print the invoice
+    async function generateAndPrintInvoice(id) {
+
+      // Function to fetch order details from the backend
+  const fetchOrderDetails = async (id) => {
+    try {
+      const response = await fetch(`${base_url}order/orders/${id}`);
+      const data = await response.json();
+      setOrderId(data.order_no);
+      setDateCreated(data.createdAt);
+      setTotalPrice(data.total);
+      setCustomer(data.customer)
+      setPos(data.paymentMethod)
+      setProducts(data.OrderItems)
+      console.log(data)
+      // setCashierName(data.cashierName);
+      // You might also want to set other state variables such as customer and products if they are fetched from the backend
+    } catch (error) {
+      console.error("Error fetching order details:", error);
+    }
+  };
+
+  // React.useEffect(() => {
+  //   fetchOrderDetails();
+  // }, []);
+
+    // Restaurant details
+    const restaurantName = "Asgard Catering";
+    const restaurantTel = "123-456-7890";
+    const restaurantEmail = "asgardcatering@example.com";
+
+    // Sale details
+    let cashierName = localStorage.getItem("username");
+    const saleDetails = `
+      Customer: ${customer}
+      Cashier Name: ${cashierName}
+      Date: ${moment(dateCreated).format("ll")}
+      Order ID: ${orderId}
+      Total Price: ${totalPrice}
+    `;
+
+    // Payment method
+    const paymentDetails = `Payment Method: ${pos}`;
+
+    // Table with purchased items
+    const itemsTable = products.map((item, index) => (
+      <tr key={index}>
+        <td>{item.name}</td>
+        <td>{item.price}</td>
+      </tr>
+    ));
+
+  
+    // Invoice template
+    const invoiceTemplate = `
+      <html>
+        <head>
+          <title>Invoice</title>
+          <style>
+            /* Add your CSS styles here */
+            body {
+              font-family: Arial, sans-serif;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+            }
+            table td, table th {
+              padding: 8px;
+              text-align: left;
+            }
+            table th {
+              background-color: #f2f2f2;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>${restaurantName}</h1>
+          <p>Tel: ${restaurantTel}</p>
+          <p>Email: ${restaurantEmail}</p>
+          <h2>Sale Invoice</h2>
+          <p>${saleDetails}</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itemsTable.join("")}
+            </tbody>
+          </table>
+          <p>${paymentDetails}</p>
+          <div>
+            ${generateQRCode(orderId,customer,dateCreated)}
+          </div>
+          <p>&copy; ${new Date().getFullYear()} Asgard Catering. All rights reserved.</p>
+        </body>
+      </html>
+    `;
+
+    // Create a new window and write the invoice template to it
+    const invoiceWindow = window.open("", "_blank");
+    invoiceWindow.document.write(invoiceTemplate);
+
+    // Close the invoice window after printing
+    setTimeout(() => {
+      invoiceWindow.print();
+      invoiceWindow.close();
+    }, 100);
+    // console.log("Invoice Data:", invoiceData);
+  };
+
   //fetch order
   const [orders, setOrders] = React.useState([]);
   React.useEffect(() => {
@@ -82,6 +219,7 @@ export default function CashierOrdersScreen() {
         setStatus(uniqueStatus);
         setPaid(uniquePay);
         setFilteredOrders(jsonData);
+        // setId(jsonData.id)
       } catch (err) {
         toast.error(getError(err));
       }
@@ -112,13 +250,14 @@ export default function CashierOrdersScreen() {
         <FormLabel>Status</FormLabel>
         <Select
           size="sm"
-          placeholder="Filter by brand"
+          placeholder="All"
+          disabled
           onChange={(e) => filterStatus(e.value)}
           options={[{ value: "All", label: "All" }, ...statusOptions]}
         />
       </FormControl>
       <FormControl size="sm">
-        <FormLabel>Category</FormLabel>
+        <FormLabel>Payment Method</FormLabel>
         <Select size="sm" placeholder="All">
           <Option value="all">All</Option>
           <Option value="pending">Pending</Option>
@@ -332,7 +471,7 @@ export default function CashierOrdersScreen() {
                       <Box
                         sx={{ display: "flex", gap: 2, alignItems: "center" }}
                       >
-                        <Link level="body-xs" component="button">
+                        <Link level="body-xs" component="button" onClick={() => generateAndPrintInvoice(order.id)}>
                           Download
                         </Link>
                         <RowMenu order={order} />

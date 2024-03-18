@@ -21,9 +21,9 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+
 import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
-// import DeleteProductModel from "./DeleteProductModel";
 import { Container } from "@mui/material";
 import { base_url, getError } from "../../Utils/Utils";
 import { toast } from "react-toastify";
@@ -34,21 +34,12 @@ export default function CashierProductScreen() {
 
   const [products, setProducts] = React.useState([]);
   const [filteredProducts, setFilteredProducts] = React.useState([]);
-  const [section, setSection] = React.useState([]);
-  const [category, setCategory] = React.useState([]);
+
   //get all products
   const fetchProducts = async () => {
     try {
       const fetched = await fetch(`${base_url}recipe/cookedFood`);
       const jsonData = await fetched.json();
-      // const uniqueBatch = [
-      //   ...new Set(jsonData.map((product) => product.batch)),
-      // ];
-      // const uniqueCate = [
-      //   ...new Set(jsonData.map((product) => product.category)),
-      // ];
-      // setSection(uniqueBatch);
-      // setCategory(uniqueCate);
       setProducts(jsonData);
       setFilteredProducts(jsonData);
     } catch (err) {
@@ -68,11 +59,6 @@ export default function CashierProductScreen() {
 
     if (search !== "") {
       const newList = products.filter((product) => {
-        // return (product.title)
-        // return Object.values(product.title)
-        //   .join('')
-        //   .toLowerCase()
-        //   .includes(search.toLowerCase());
         return product.title
           .join("")
           .toLowerCase()
@@ -147,7 +133,7 @@ export default function CashierProductScreen() {
       <FormControl size="sm" style={{ zIndex: 100 }}>
         <FormLabel>Batch</FormLabel>
         <Select
-          disabled="true"
+          disabled
           size="sm"
           placeholder="Filter by brand"
           onChange={(e) => filterBatch(e.value)}
@@ -155,7 +141,7 @@ export default function CashierProductScreen() {
         />
       </FormControl>
       <FormControl size="sm" style={{ zIndex: 100 }}>
-        <FormLabel>Category</FormLabel>
+        <FormLabel>Paymennt Method</FormLabel>
         <Select
           disabled="true"
           size="sm"
@@ -238,7 +224,7 @@ export default function CashierProductScreen() {
                 Dashboard
               </Link>
               <Typography color="primary" fontWeight={500} fontSize={12}>
-                Products
+                Foods
               </Typography>
             </Breadcrumbs>
           </Box>
@@ -254,7 +240,7 @@ export default function CashierProductScreen() {
             }}
           >
             <Typography level="h2" component="h1">
-              Products
+              Foods
             </Typography>
           </Box>
 
@@ -350,12 +336,22 @@ export default function CashierProductScreen() {
                               <Typography level="body-xs">
                                 {product.foodName}
                               </Typography>
-                              <Typography
-                                level="body-xs"
-                                sx={{ color: "green" }}
-                              >
-                                Available
-                              </Typography>
+
+                              {product.quantity === 0 ? (
+                                <Typography
+                                  level="body-xs"
+                                  sx={{ color: "red" }}
+                                >
+                                  Out Of Stock
+                                </Typography>
+                              ) : (
+                                <Typography
+                                  level="body-xs"
+                                  sx={{ color: "green" }}
+                                >
+                                  Available
+                                </Typography>
+                              )}
                             </div>
                           </Box>
                         </td>
@@ -392,12 +388,21 @@ export default function CashierProductScreen() {
                               <Typography level="body-xs">
                                 {product.foodName}
                               </Typography>
-                              <Typography
-                                level="body-xs"
-                                sx={{ color: "green" }}
-                              >
-                                Available
-                              </Typography>
+                              {product.quantity === 0 ? (
+                                <Typography
+                                  level="body-xs"
+                                  sx={{ color: "red" }}
+                                >
+                                  Out Of Stock
+                                </Typography>
+                              ) : (
+                                <Typography
+                                  level="body-xs"
+                                  sx={{ color: "green" }}
+                                >
+                                  Available
+                                </Typography>
+                              )}
                             </div>
                           </Box>
                         </td>
