@@ -326,23 +326,7 @@ recipeRouter.get('/cookedFood', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-//get notification if the product quantity less 10
-// recipeRouter.get('/cookedfood/low-quantity', async (req, res) => {
-//   try {
-//     const lowQuantityProducts = await CookedFood.findAll({
-//       where: {
-//         quantity: {
-//           [Op.lt]: 20 // Example threshold for low quantity
-//         }
-//       }
-//     });
-//     res.json(lowQuantityProducts);
-//   } catch (error) {
-//     console.error('Error fetching low quantity products:', error);
-//     res.status(500).json({ error: 'Internal server error' });
-//   }
-// });
-
+//get notification if product reach 20kg
 recipeRouter.get('/cookedfood/low-quantity', async (req, res) => {
   try {
     const lowQuantityFoods = await CookedFood.findAll({
@@ -430,7 +414,7 @@ recipeRouter.get('/cookedFood/:id', async (req, res) => {
   }
 });
 
-//delete a food item
+//delete a food item and return the food quantity
 recipeRouter.delete('/cookedFood/:id', async (req, res) => {
   const { id } = req.params;
 
@@ -517,65 +501,55 @@ recipeRouter.put('/cookedFood/:id',multerUpload.single("image"), async (req, res
   }
 });
 
-// recipeRouter.patch("/cookedFood/:productId", async (req, res) => {
-//   try {
-//     const productId = req.params.productId;
-//     const { newStock } = req.body;
+// Route to update the quantity of a food and deduct its recipe ingredients
+recipeRouter.put('/update-food/:foodId', async (req, res) => {
+  const { foodId } = req.params;
+  const { newQuantity} = req.body;
 
-//     // Validate that productId is a positive integer
-//     if (!productId || isNaN(productId) || productId <= 0) {
-//       return res.status(400).json({ message: "Invalid productId" });
-//     }
+  try {
+    // Find the food by its ID
+    const food = await CookedFood.findByPk(foodId);
 
-//     // Validate that newStock is a non-negative integer
-//     if (isNaN(newStock) || newStock < 0) {
-//       return res.status(400).json({ message: "Invalid newStock value" });
-//     }
+    if (!food) {
+      return res.status(404).json({ error: 'Food not found' });
+    }
 
-//     // Find the product by its ID
-//     const product = await CookedFood.findByPk(productId);
-//     if (!product) {
-//       return res.status(404).json({ message: "Product not found" });
-//     }
+    food.quantity = newQuantity;
+    await food.save();
 
-//     // Update the stock of the product
-//     await CookedFood.update(
-//       { quantity: newStock },
-//       { where: { id: productId } }
-//     );
+    // Find the recipe associated with the food
+    // const recipe = await Recipe.findOne({ where: { id: food.recipe_id } });
+    const ingredients = await Ingredients.findAll({
+      where: {
+        recipe_id: food.recipe_id,
+      },
+    });
+    // Update stock levels for each ingredient
+      await Promise.all(
+        ingredients.map(async (ingredient) => {
+          const product = await Products.findByPk(ingredient.pdct_id);
+          if (!product) {
+            throw new Error(`Product with ID ${ingredient.pdct_id} not found`);
+          }
+          if (product.inStock < ingredient.quantity) {
+            throw new Error(
+              `Insufficient stock for product with ID ${ingredient.pdct_id}`
+            );
+          }
 
-//     // If the product has a recipe ID, reduce the stock of its ingredients
-//     if (product.recipeId) {
-//       const recipe = await Recipe.findByPk(product.recipeId);
-//       if (!recipe) {
-//         return res.status(404).json({ message: "Recipe not found" });
-//       }
+          // Subtract ingredient quantity from product stock
+          product.inStock -= ingredient.quantity;
+          await product.save();
+        })
+      );
+      const recipe = await Recipe.findOne({ where: { id: food.recipe_id } });
 
-//       const recipeIngredients = await RecipeIngredients.findAll({
-//         where: { recipeId: product.recipeId }
-//       });
-
-//       for (const recipeIngredient of recipeIngredients) {
-//         const ingredientProduct = await CookedFood.findByPk(recipeIngredient.productId);
-//         if (ingredientProduct) {
-//           await CookedFood.update(
-//             { quantity: ingredientProduct.quantity - (recipeIngredient.quantity * newStock) },
-//             { where: { id: recipeIngredient.productId } }
-//           );
-//         }
-//       }
-//     }
-
-//     const updatedProduct = await CookedFood.findByPk(productId);
-//     res.json(updatedProduct);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({
-//       message: "Error updating product stock",
-//       error: error.message,
-//     });
-//   }
-// });
+    res.json({ message: 'Food quantity updated successfully' });
+  } catch (error) {
+    console.error('Error occurred while updating food quantity:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
 

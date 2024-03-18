@@ -175,20 +175,45 @@ orderRouter.get("/allorders", async (req, res) => {
     });
   }
 });
+//Delete order and its orderitems
+orderRouter.delete('/order/:id', async (req, res) => {
+  const { id } = req.params;
 
-//Delete  order and its orderitems
-// orderRouter.delete("/order/del/:idNo",async (req,res)=>{
-//   const orderNo = req.params.idNo;
-//   const order = await Order.findOne({
-//     where:{
-//       order_no:orderNo,
-//     },
-//     include:[OrderItems],
-//   });
-//   if(!order){
-//     return res.status(404).json({error:"Error order not found"});
-//   }
-//   console.log(order)
+  try {
+    // Fetch the order with the given ID and include its associated order items
+    const order = await Order.findByPk(id, {
+      include: {
+        model: OrderItems,
+        include: CookedFood
+      }
+    });
 
-// })
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    // Loop through the order items to return the quantity of each item back to stock
+    await Promise.all(order.OrderItems.map(async (orderItem) => {
+      const product = await CookedFood.findByPk(orderItem.CookedFoodId);
+      if (!product) {
+        throw new Error(`Product with ID ${orderItem.CookedFoodId} not found`);
+      }
+
+      // Add the quantity of the order item back to the product stock
+      product.quantity += orderItem.quantity;
+      await product.save();
+      await orderItem.destroy();
+    }));
+
+    // Delete the order and its associated order items
+    await order.destroy();
+
+    res.status(200).json({ message: 'Order deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting Order:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
 module.exports = orderRouter;
