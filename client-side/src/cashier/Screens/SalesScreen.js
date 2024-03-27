@@ -256,6 +256,8 @@ export default function CashierSalesScreen() {
       customer,
       paymentMethod: selectedPay.value,
       product,
+      user_id:cashId,
+      status:"Paid"
     };
 
     try {
@@ -274,6 +276,10 @@ export default function CashierSalesScreen() {
     }
   };
 
+  //get cashier id
+  let cashId = localStorage.getItem("cashier_Id")
+
+  //filter product < 0  & map the rest
   const availableProducts = prdOptions.filter(product => product.quantity > 0);
   const Options = availableProducts.map((item) => ({
     value: item.id,

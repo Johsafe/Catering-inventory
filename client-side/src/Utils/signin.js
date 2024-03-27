@@ -41,6 +41,7 @@ export default function Loginin() {
       // localStorage.setItem("Logged", JSON.stringify(response.data));
       localStorage.setItem("username", response.data.username);
       localStorage.setItem("email", response.data.email);
+      localStorage.setItem("cashier_Id", response.data.id);
     } catch (err) {
       toast.error(getError(err));
     }

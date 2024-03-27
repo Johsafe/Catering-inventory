@@ -14,7 +14,7 @@ import Card from "@mui/joy/Card";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import FileUploadRoundedIcon from "@mui/icons-material/FileUploadRounded";
-import { Form, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Container } from "@mui/material";
 import { base_url, getError } from "../../Utils/Utils";
 import { toast } from "react-toastify";
@@ -27,7 +27,6 @@ export default function EditProductScreen() {
     document.getElementById("image").click();
   };
 
-  //post data
   const navigate = useNavigate();
   const params = useParams();
   const [title, setTitle] = React.useState("");
@@ -40,7 +39,6 @@ export default function EditProductScreen() {
   const [category, setCategory] = React.useState("");
   const [expire, setExpire] = React.useState("");
   const [status, setStatus] = React.useState("");
-  // const [supplierId, setSupplierId] = React.useState("");
 
   const [supplierId, setSupplier] = React.useState(null);
   const [previousValue, setPreviousValue] = React.useState(null);
@@ -293,6 +291,7 @@ export default function EditProductScreen() {
                       <FormLabel>Product Expire Date</FormLabel>
                       <Input
                         sx={{ flexGrow: 1 }}
+                        type="date"
                         size="sm"
                         placeholder="e.g 27-9-2024"
                         value={expire}
@@ -317,7 +316,6 @@ export default function EditProductScreen() {
                       <Input
                         sx={{ flexGrow: 1 }}
                         size="sm"
-                        // placeholder="e.g instock"
                         value={previousValue}
                         required
                         disabled

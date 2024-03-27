@@ -26,7 +26,6 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
-import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
 import { Container } from "@mui/material";
@@ -174,10 +173,10 @@ export default function UsersScreen() {
             </Typography>
             <Button
               color="primary"
-              startDecorator={<DownloadRoundedIcon />}
+              // startDecorator={<DownloadRoundedIcon />}
               size="sm"
             >
-              Download PDF
+              Add Cashier
             </Button>
           </Box>
 

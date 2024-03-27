@@ -13,10 +13,6 @@ import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
 import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
 import Typography from "@mui/joy/Typography";
-import Menu from "@mui/joy/Menu";
-import MenuButton from "@mui/joy/MenuButton";
-import MenuItem from "@mui/joy/MenuItem";
-import Dropdown from "@mui/joy/Dropdown";
 import Breadcrumbs from "@mui/joy/Breadcrumbs";
 
 import EditIcon from "@mui/icons-material/Edit";
@@ -27,35 +23,15 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SearchIcon from "@mui/icons-material/Search";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-// import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
 import { ButtonGroup, Container } from "@mui/material";
 import { toast } from "react-toastify";
 import { base_url, getError } from "../../Utils/Utils";
 import SideBar from "../../Utils/AdminSideBar";
 
-function RowMenu() {
-  return (
-    <Dropdown>
-      <MenuButton
-        slots={{ root: IconButton }}
-        slotProps={{ root: { variant: "plain", color: "neutral", size: "sm" } }}
-      >
-        <MoreHorizRoundedIcon />
-      </MenuButton>
-      <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem>Edit</MenuItem>
-        <MenuItem>View</MenuItem>
-        <Divider />
-        <MenuItem color="danger">Delete</MenuItem>
-      </Menu>
-    </Dropdown>
-  );
-}
 
 export default function RecipeScreen() {
   const [open, setOpen] = React.useState(false);
@@ -238,25 +214,11 @@ export default function RecipeScreen() {
             }}
           >
             <Table
-              aria-labelledby="tableTitle"
-              stickyHeader
-              hoverRow
-              sx={{
-                "--TableCell-headBackground":
-                  "var(--joy-palette-background-level1)",
-                "--Table-headerUnderlineThickness": "1px",
-                "--TableRow-hoverBackground":
-                  "var(--joy-palette-background-level1)",
-                "--TableCell-paddingY": "4px",
-                "--TableCell-paddingX": "8px",
-              }}
             >
               <thead>
                 <tr>
                   <th style={{ width: 120, padding: "12px 6px" }}>N/A</th>
-                  {/* <th style={{ width: 140, padding: "12px 6px" }}>Id</th> */}
                   <th style={{ width: 240, padding: "12px 6px" }}>Title</th>
-                  {/* <th style={{ width: 240, padding: "12px 6px" }}>Customer</th> */}
                   <th style={{ width: 140, padding: "12px 6px" }}> </th>
                 </tr>
               </thead>
@@ -266,11 +228,6 @@ export default function RecipeScreen() {
                     <td>
                       <Typography level="body-xs">{i++}</Typography>
                     </td>
-                    {/* <td>
-                      <Typography level="body-xs">
-                        {recipe.recipe_id}
-                      </Typography>
-                    </td> */}
                     <td>
                       {" "}
                       <Typography level="body-xs">{recipe.title}</Typography>
@@ -300,42 +257,11 @@ export default function RecipeScreen() {
                             onClick={() => deleteRecipe(recipe.id)}
                             style={{ background: "none" }}
                           >
-                            {/* <DeleteIcon style={{ color: "red" }} /> */}
                             <DeleteForever sx={{ color: "red" }} />
                           </Button>
                         </ButtonGroup>
                       </div>
                     </td>
-                    {/* <td>
-                      <Box
-                        sx={{ display: "flex", gap: 2, alignItems: "center" }}
-                      >
-                        <Avatar
-                          size="40"
-                          color={Avatar.getRandomColor("sitebase", [
-                            "rgb(233, 150, 150)",
-                            "rgb(164, 231, 164)",
-                            "rgb(236, 224, 167)",
-                            "rgb(174, 185, 233)",
-                          ])}
-                          round={true}
-                          name={recipe.sname}
-                        />
-                        <div>
-                          <Typography level="body-xs">
-                            {recipe.fname} {recipe.sname}
-                          </Typography>
-                          <Typography level="body-xs">{recipe.email}</Typography>
-                        </div>
-                      </Box>
-                    </td> */}
-                    {/* <td>
-                      <Box
-                        sx={{ display: "flex", gap: 2, alignItems: "center" }}
-                      >
-                        <RowMenu recipe={recipe} />
-                      </Box>
-                    </td> */}
                   </tr>
                 ))}
               </tbody>

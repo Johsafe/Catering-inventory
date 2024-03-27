@@ -14,7 +14,7 @@ import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
 import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
 import Typography from "@mui/joy/Typography";
-import EditIcon from "@mui/icons-material/Edit";
+// import EditIcon from "@mui/icons-material/Edit";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import DeleteForever from "@mui/icons-material/DeleteForever";
 import Breadcrumbs from "@mui/joy/Breadcrumbs";
@@ -34,6 +34,7 @@ import { Container } from "@mui/material";
 import { base_url, getError } from "../../Utils/Utils";
 import { toast } from "react-toastify";
 import SideBar from "../../Utils/AdminSideBar";
+import AdminDownloadScreen from "./DownloadInvoiceAdmin";
 
 // function RowMenu({ order,deleteOrder }) {
 //   return (
@@ -342,9 +343,7 @@ export default function OrdersScreen() {
                       <Box
                         sx={{ display: "flex", gap: 2, alignItems: "center" }}
                       >
-                        <Link level="body-xs" component="button">
-                          Download
-                        </Link>
+                        <AdminDownloadScreen orderId={order.id} />
                         {/* <RowMenu order={order} deleteOrder={deleteOrder(order.id)} /> */}
                           <div>
                             <ButtonGroup

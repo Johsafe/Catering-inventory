@@ -28,6 +28,7 @@ import Notifications from "./admin/Screens/NotificationScreen";
 import FoodScreen from "./admin/Screens/FoodScreen";
 import AddFoodScreen from "./admin/Screens/AddFoodScreen";
 import EditFoodScreen from "./admin/Screens/EditFoodScreen";
+import EditRecipeScreen from "./admin/Screens/EditRecipeScreen";
 
 //Cashier Routes
 import CashierDashboardScreen from "./cashier/Screens/DashboardScreen";
@@ -35,6 +36,7 @@ import CashierOrdersScreen from "./cashier/Screens/OrdersScreen";
 import CashierProductScreen from "./cashier/Screens/ProductScreen";
 import CashierSalesScreen from "./cashier/Screens/SalesScreen";
 import CashierTransactionScreen from "./cashier/Screens/TransactionScreen";
+
 
 export default function App() {
   let token = localStorage.getItem("token") ? true : false;
@@ -89,6 +91,10 @@ export default function App() {
           <Route
             path="/admin-dashboard/:id/viewrecipe"
             element={token ? <ViewRecipe /> : <Navigate to="/" />}
+          />
+           <Route
+            path="/admin-dashboard/:id/editrecipe"
+            element={token ? <EditRecipeScreen /> : <Navigate to="/" />}
           />
           <Route
             path="/admin-dashboard/add"

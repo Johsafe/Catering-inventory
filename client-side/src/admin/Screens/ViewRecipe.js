@@ -149,22 +149,7 @@ export default function ViewRecipe() {
                       <h1>{recipes.title}</h1>
                     </div>
                   </Paper>
-                  <Paper
-                    sx={{
-                      p: 2,
-                      flexDirection: "column",
-                      mb: 2,
-                      overflow: "hidden",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "30rem",
-                      }}
-                    >
-                      <h3>Recipe Ingredients</h3>
-                    </div>
-                  </Paper>
+                 
                   <Paper
                     sx={{
                       p: 2,
@@ -211,6 +196,20 @@ export default function ViewRecipe() {
                             ))}
                         </tbody>
                       </table>
+                    </div>
+                  </Paper>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      flexDirection: "column",
+                      mb: 2,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                    >
+                      <h3>Cooking Instructions</h3>
+                     <p> {recipes.description}</p>
                     </div>
                   </Paper>
                 </Grid>

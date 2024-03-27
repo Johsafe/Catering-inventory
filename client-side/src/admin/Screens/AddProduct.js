@@ -265,6 +265,7 @@ export default function AddProduct() {
                     <FormControl sx={{ flexGrow: 1 }}>
                       <FormLabel>Product Expire Date</FormLabel>
                       <Input
+                         type="date"
                         sx={{ flexGrow: 1 }}
                         size="sm"
                         placeholder="e.g 27-9-2024"

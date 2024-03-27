@@ -14,15 +14,16 @@ import Card from "@mui/joy/Card";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Container } from "@mui/material";
 import { toast } from "react-toastify";
 import { base_url, getError } from "../../Utils/Utils";
 import SideBar from "../../Utils/AdminSideBar";
 import Select from "react-select";
 
-export default function AddRecipe() {
+export default function EditRecipeScreen() {
   //post data
+  const params = useParams();
   const navigate = useNavigate();
   const [title, setTitle] = React.useState("");
   const [description, setDescription] = React.useState("");
@@ -69,14 +70,14 @@ export default function AddRecipe() {
     };
 
     try {
-      const response = await fetch(`${base_url}recipe/create`, {
-        method: "POST",
+      const response = await fetch(`${base_url}recipe/recipes/${params.id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
-      // console.log("Form submitted successfully", response);
+      console.log("Form submitted successfully", response);
       navigate("/admin-dashboard/recipe");
     } catch (error) {
       console.error("Error submitting form", error);
@@ -135,7 +136,7 @@ export default function AddRecipe() {
             }}
           >
             <Typography level="h2" component="h1">
-              Add Recipe
+              Edit Recipe
             </Typography>
             <Link to="/recipe">
               <Button
@@ -192,7 +193,6 @@ export default function AddRecipe() {
                         onChange={(e) => setDescription(e.target.value)}
                       />
                     </Stack>
-                    {/* <Stack spacing={2} alignItems="flex-start"> */}
                     <Select
                       isMulti
                       value={products}
@@ -210,14 +210,6 @@ export default function AddRecipe() {
                         }}
                       >
                         <b>Quantity for {veg.label}:</b>
-                        {/* <Input
-                          type="number"
-                          value={veg.quantity}
-                          onChange={(e) =>
-                            handleQuantityChange(index, e.target.value)
-                          }
-                          sx={{ width: "400px" }}
-                        /> */}
                         <Input
                                 type="number"
                                 value={veg.quantity}
@@ -226,7 +218,7 @@ export default function AddRecipe() {
                                     /[^0-9]/g,
                                     ""
                                   ); // Remove non-numeric characters
-                                  const numericValue = parseInt(inputValue, 10); // Convert string to number
+                                  const numericValue = parseInt(inputValue, 10);
                                   if (numericValue >= 1) {
                                     // Only update quantity if it's a non-negative number
                                     handleQuantityChange(index, numericValue);
@@ -251,16 +243,12 @@ export default function AddRecipe() {
                     sx={{ width: "100%" }}
                     type="submit"
                   >
-                    Add Recipe
+                    Edit Recipe
                   </Button>
                 </div>
               </Card>
             </Stack>
           </form>
-          {/* <p>
-            Your favorite vegetables:{" "}
-            {products.map((veg) => `${veg.label} (${veg.quantity})`).join(", ")}{" "}
-          </p> */}
         </Box>
       </Container>
     </div>
