@@ -9,17 +9,17 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    // createdby: {
-    //   type: DataTypes.INTEGER,
-    //   allowNull: false,
-    // },
+    createdby: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     description: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
   });
   Recipe.associate = function (models) {
-    Recipe.hasMany(models.Ingredients, { foreignKey: 'recipe_id' });
+    Recipe.hasMany(models.Ingredients, { foreignKey: 'recipeId' });
   };
 
   return Recipe;

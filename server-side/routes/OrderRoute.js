@@ -1,7 +1,7 @@
 const express = require("express");
 const { Op } = require("sequelize");
 const orderRouter = express.Router();
-const { Order,Products, OrderItems, CookedFood } = require("../models");
+const { Order,Products, OrderItems, CookedFood ,User} = require("../models");
 
 const generateItemId = () => {
   const characters = "ABCDEFGHIJKLMOP0123456789";
@@ -20,11 +20,11 @@ const generateItemId = () => {
 //  Route to create a new order
 orderRouter.post("/order", async (req, res) => {
   try {
-    const { customer, product, paymentMethod } = req.body;
+    const {user_id,status, customer, product, paymentMethod } = req.body;
 
     // Create a new order
     const order_no = generateItemId();
-    const newOrder = await Order.create({ order_no, customer, paymentMethod });
+    const newOrder = await Order.create({ order_no, customer, paymentMethod ,user_id,status,});
 
     // Calculate total amount
     let total = 0;
@@ -116,6 +116,10 @@ orderRouter.get("/orders/:id", async (req, res) => {
           model: OrderItems,
           // include: [CookedFood],
         },
+        {
+          model: User, // Assuming User is the model representing users
+        },
+
       ],
     });
 

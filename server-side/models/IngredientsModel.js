@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const Ingredients = sequelize.define("Ingredients", {
-    recipe_id: {
+    recipeId: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Ingredients.associate = function (models) {
-    Ingredients.belongsTo(models.Recipe, { foreignKey: 'recipe_id' });
+    Ingredients.belongsTo(models.Recipe, { foreignKey: 'recipeId' });
     Ingredients.belongsTo(models.Products);
   };
 
